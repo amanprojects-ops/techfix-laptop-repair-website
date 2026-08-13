@@ -1,0 +1,38 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.swp
+*.swo
+*~
+
+# Kiro
+.kiro/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependency directories (if you add a build tool later)
+node_modules/
+
+# Build output (if you add a bundler later)
+dist/
+build/
+
+# Environment / secrets
+.env
+.env.local
+.env.production
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+research.md
