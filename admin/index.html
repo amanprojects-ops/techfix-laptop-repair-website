@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechFix Admin — Laptop Repair Management Hub</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <base href="/admin">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <a href="index.html" class="brand-logo-link">
+                    <img src="assets/images/logo.svg" alt="TechFix Admin" class="brand-logo-img">
+                    <img src="assets/images/icon.svg" alt="TechFix Icon" class="brand-logo-icon">
+                </a>
+            </div>
+
+            <nav class="main-nav">
+                <div class="nav-section-title">Core Operations</div>
+                <ul>
+                    <li class="active">
+                        <a href="index.html">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Dashboard Overview</span>
+                        </a>
+                    </li>
+                    <li class="has-submenu">
+                        <a href="#" class="menu-toggle">
+                            <i class="fas fa-laptop-medical"></i>
+                            <span>Repair Jobs</span>
+                            <span class="nav-tag">34</span>
+                            <i class="fas fa-chevron-right submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li class="active"><a href="index.html#repair-queue"><i
+                                        class="fas fa-list-ul"></i><span>Active Lab Queue</span></a></li>
+                            <li><a href="create.html"><i class="fas fa-plus-circle"></i><span>Intake New
+                                        Device</span></a></li>
+                            <li><a href="reports.html"><i class="fas fa-history"></i><span>Completed Repairs</span></a>
+                            </li>
+                            <li><a href="reports.html"><i class="fas fa-check-double"></i><span>Ready for
+                                        Delivery</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu">
+                        <a href="#" class="menu-toggle">
+                            <i class="fas fa-microchip"></i>
+                            <span>Service Catalog</span>
+                            <i class="fas fa-chevron-right submenu-arrow"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="create.html"><i class="fas fa-plus-circle"></i><span>Create Service</span></a>
+                            </li>
+                            <li><a href="edit.html"><i class="fas fa-edit"></i><span>Edit Service Rates</span></a></li>
+                            <li><a href="view.html"><i class="fas fa-file-invoice"></i><span>Job Sheet
+                                        Preview</span></a></li>
+                            <li><a href="blank.html"><i class="fas fa-layer-group"></i><span>Custom Module</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="nav-section-title">Analytics & Lab</div>
+                <ul>
+                    <li>
+                        <a href="reports.html">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Reports & Revenue</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="view.html">
+                            <i class="fas fa-receipt"></i>
+                            <span>Job Sheets & Invoices</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../repair-status.html" target="_blank">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>Live Customer Tracker</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../index.html" target="_blank">
+                            <i class="fas fa-globe"></i>
+                            <span>View Customer Site</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar">A</div>
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-name">Aman Sharma</div>
+                        <div class="sidebar-user-role">Lead Engineer (Admin)</div>
+                    </div>
+                </div>
+                <a href="login.html" class="logout-btn">
+                    <i class="fas fa-power-off"></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Sticky Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle Sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="header-title-wrap">
+                        <h2>Repair Operations Dashboard</h2>
+                        <span class="header-subtitle">TechFix Laptop Repair Center • Saharsa Hub</span>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="headerSearch" placeholder="Search Repair ID (e.g. LR-2026)...">
+                    </div>
+
+                    <a href="create.html" class="quick-action-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>New Job Card</span>
+                    </a>
+
+                    <div class="notification" title="3 Alerts in Lab">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </div>
+
+                    <div class="user-profile">
+                        <div class="user-avatar">AS</div>
+                        <div class="user-meta">
+                            <span class="user-name">Aman (Admin)</span>
+                            <span class="user-role-badge">Master Tech</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Welcome Banner -->
+                <div class="system-banner">
+                    <div class="system-banner-left">
+                        <div class="banner-icon-box">
+                            <i class="fas fa-laptop-medical"></i>
+                        </div>
+                        <div class="banner-text">
+                            <h3>TechFix Lab Live Queue • 34 Devices In Progress</h3>
+                            <p>8 devices awaiting final quality check, 18 devices ready for customer pickup today.</p>
+                        </div>
+                    </div>
+                    <div class="banner-actions">
+                        <a href="create.html" class="btn-banner-white">
+                            <i class="fas fa-plus-circle"></i> Intake Laptop
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Stat Cards -->
+                <section class="stats-container">
+                    <div class="stat-card card-blue">
+                        <div class="stat-main">
+                            <span class="stat-label">Total Repaired Devices</span>
+                            <span class="stat-value">1,428</span>
+                            <span class="stat-footnote">
+                                <span class="trend-up"><i class="fas fa-arrow-up"></i> +14%</span> vs last month
+                            </span>
+                        </div>
+                        <div class="stat-icon-wrapper bg-blue-light">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-card card-amber">
+                        <div class="stat-main">
+                            <span class="stat-label">Active in Lab Queue</span>
+                            <span class="stat-value">34</span>
+                            <span class="stat-footnote">
+                                <span class="trend-up"><i class="fas fa-wrench"></i> 12 Screen, 10 Board</span>
+                            </span>
+                        </div>
+                        <div class="stat-icon-wrapper bg-orange-light">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-card card-green">
+                        <div class="stat-main">
+                            <span class="stat-label">Ready for Customer Pickup</span>
+                            <span class="stat-value">18</span>
+                            <span class="stat-footnote">
+                                <span class="trend-up"><i class="fas fa-box-check"></i> Quality tested</span>
+                            </span>
+                        </div>
+                        <div class="stat-icon-wrapper bg-green-light">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-card card-purple">
+                        <div class="stat-main">
+                            <span class="stat-label">Revenue This Month</span>
+                            <span class="stat-value">₹2,48,500</span>
+                            <span class="stat-footnote">
+                                <span class="trend-up"><i class="fas fa-arrow-up"></i> +18.4%</span> target achieved
+                            </span>
+                        </div>
+                        <div class="stat-icon-wrapper bg-purple-light">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Charts -->
+                <section class="charts-container">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-header-left">
+                                <h3>Monthly Repair Inflow vs Completed</h3>
+                                <p>Volume of laptops booked vs delivered per week</p>
+                            </div>
+                            <div class="card-options">
+                                <select id="timeRangeSelect">
+                                    <option value="month" selected>This Month (August 2026)</option>
+                                    <option value="quarter">This Quarter</option>
+                                    <option value="year">Year 2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="repairTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-header-left">
+                                <h3>Service Categories</h3>
+                                <p>Distribution by issue category</p>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="serviceCategoryChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Brand Distribution & Quick Stats -->
+                <section class="charts-container" style="margin-bottom: 24px;">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-header-left">
+                                <h3>Repairs Volume by Laptop Brand</h3>
+                                <p>Dell, HP, Lenovo & Apple dominate repair share</p>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="brandRevenueChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-header-left">
+                                <h3>Lab Efficiency Metrics</h3>
+                                <p>Key Performance Indicators</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:16px; margin-top:10px;">
+                            <div>
+                                <div
+                                    style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:6px;">
+                                    <span>Average Turnaround Time</span>
+                                    <span style="color:var(--primary-color)">4.2 Hours (Same Day)</span>
+                                </div>
+                                <div style="height:8px; background:#E2E8F0; border-radius:4px; overflow:hidden;">
+                                    <div
+                                        style="width:88%; height:100%; background:var(--primary-color); border-radius:4px;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div
+                                    style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:6px;">
+                                    <span>Motherboard Chip Success Rate</span>
+                                    <span style="color:#10B981">94.8% Success</span>
+                                </div>
+                                <div style="height:8px; background:#E2E8F0; border-radius:4px; overflow:hidden;">
+                                    <div style="width:95%; height:100%; background:#10B981; border-radius:4px;"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div
+                                    style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:6px;">
+                                    <span>Customer Satisfaction Score</span>
+                                    <span style="color:#8B5CF6">4.9 / 5.0 (840 Reviews)</span>
+                                </div>
+                                <div style="height:8px; background:#E2E8F0; border-radius:4px; overflow:hidden;">
+                                    <div style="width:98%; height:100%; background:#8B5CF6; border-radius:4px;"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div
+                                    style="display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:6px;">
+                                    <span>Warranty Claim Ratio</span>
+                                    <span style="color:#059669">
+                                        < 1.2% (Industry Best)</span>
+                                </div>
+                                <div style="height:8px; background:#E2E8F0; border-radius:4px; overflow:hidden;">
+                                    <div style="width:92%; height:100%; background:#059669; border-radius:4px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Live Repair Queue Table -->
+                <section class="table-card" id="repair-queue">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <h3>Live Repair Job Cards & Status</h3>
+                            <p>Real-time repair workflow tracked across all technicians</p>
+                        </div>
+                        <div class="card-options">
+                            <select id="statusFilterSelect">
+                                <option value="all">All Statuses</option>
+                                <option value="received">Received</option>
+                                <option value="diagnosing">Diagnosing</option>
+                                <option value="repairing">Repairing</option>
+                                <option value="testing">Quality Testing</option>
+                                <option value="ready">Ready for Pickup</option>
+                            </select>
+                            <a href="create.html" class="quick-action-btn" style="padding:6px 14px; font-size:12.5px;">
+                                <i class="fas fa-plus"></i> New Ticket
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Repair ID</th>
+                                    <th>Customer Details</th>
+                                    <th>Device & Issue</th>
+                                    <th>Assigned Tech</th>
+                                    <th>Received Date</th>
+                                    <th>Status</th>
+                                    <th>Estimate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="ticket-id">LR-2026-10293</span></td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <span class="customer-name">Amit Sharma</span>
+                                            <span class="customer-phone">+91 98765 43210</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="device-cell">
+                                            <i class="fas fa-laptop device-icon"></i>
+                                            <div>
+                                                <div class="device-name">Dell Inspiron 15 (2022)</div>
+                                                <div class="device-issue">FHD IPS Screen Replacement</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><strong>Rakesh Kumar</strong></td>
+                                    <td>12 Aug 2026</td>
+                                    <td><span class="status-badge badge-repairing">Repairing</span></td>
+                                    <td><strong>₹3,200</strong></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="view.html" class="btn-icon-action" title="View Job Card"><i
+                                                    class="fas fa-eye"></i></a>
+                                            <a href="edit.html" class="btn-icon-action" title="Update Status"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <a href="https://wa.me/919876543210" target="_blank"
+                                                class="btn-icon-action btn-whatsapp" title="WhatsApp Customer"><i
+                                                    class="fab fa-whatsapp"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ticket-id">LR-2026-10281</span></td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <span class="customer-name">Priya Verma</span>
+                                            <span class="customer-phone">+91 98123 45678</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="device-cell">
+                                            <i class="fas fa-microchip device-icon"></i>
+                                            <div>
+                                                <div class="device-name">HP Pavilion 14</div>
+                                                <div class="device-issue">Power IC Motherboard Short</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><strong>Sunil Singh</strong></td>
+                                    <td>10 Aug 2026</td>
+                                    <td><span class="status-badge badge-ready">Ready for Pickup</span></td>
+                                    <td><strong>₹2,800</strong></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="view.html" class="btn-icon-action" title="View Job Card"><i
+                                                    class="fas fa-eye"></i></a>
+                                            <a href="edit.html" class="btn-icon-action" title="Update Status"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <a href="https://wa.me/919812345678" target="_blank"
+                                                class="btn-icon-action btn-whatsapp" title="WhatsApp Customer"><i
+                                                    class="fab fa-whatsapp"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ticket-id">LR-2026-10270</span></td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <span class="customer-name">Rajesh Jha</span>
+                                            <span class="customer-phone">+91 97456 12345</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="device-cell">
+                                            <i class="fas fa-battery-three-quarters device-icon"></i>
+                                            <div>
+                                                <div class="device-name">Lenovo IdeaPad 3</div>
+                                                <div class="device-issue">OEM 45Wh Battery Replacement</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><strong>Amit Jha</strong></td>
+                                    <td>09 Aug 2026</td>
+                                    <td><span class="status-badge badge-diagnosing">Diagnosing</span></td>
+                                    <td><strong>₹1,850</strong></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="view.html" class="btn-icon-action" title="View Job Card"><i
+                                                    class="fas fa-eye"></i></a>
+                                            <a href="edit.html" class="btn-icon-action" title="Update Status"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <a href="https://wa.me/919745612345" target="_blank"
+                                                class="btn-icon-action btn-whatsapp" title="WhatsApp Customer"><i
+                                                    class="fab fa-whatsapp"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ticket-id">LR-2026-10265</span></td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <span class="customer-name">Neha Singh</span>
+                                            <span class="customer-phone">+91 99887 76655</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="device-cell">
+                                            <i class="fab fa-apple device-icon"></i>
+                                            <div>
+                                                <div class="device-name">MacBook Air M1 (2020)</div>
+                                                <div class="device-issue">Liquid Spillage Ultrasonic Cleaning</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><strong>Aman Sharma</strong></td>
+                                    <td>08 Aug 2026</td>
+                                    <td><span class="status-badge badge-testing">Quality Testing</span></td>
+                                    <td><strong>₹4,500</strong></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="view.html" class="btn-icon-action" title="View Job Card"><i
+                                                    class="fas fa-eye"></i></a>
+                                            <a href="edit.html" class="btn-icon-action" title="Update Status"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <a href="https://wa.me/919988776655" target="_blank"
+                                                class="btn-icon-action btn-whatsapp" title="WhatsApp Customer"><i
+                                                    class="fab fa-whatsapp"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><span class="ticket-id">LR-2026-10250</span></td>
+                                    <td>
+                                        <div class="customer-cell">
+                                            <span class="customer-name">Rahul Mehta</span>
+                                            <span class="customer-phone">+91 98234 56789</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="device-cell">
+                                            <i class="fas fa-fan device-icon"></i>
+                                            <div>
+                                                <div class="device-name">Asus ROG Strix G15</div>
+                                                <div class="device-issue">Liquid Metal Re-paste & Fan Clean</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><strong>Rakesh Kumar</strong></td>
+                                    <td>07 Aug 2026</td>
+                                    <td><span class="status-badge badge-received">Received</span></td>
+                                    <td><strong>₹1,200</strong></td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="view.html" class="btn-icon-action" title="View Job Card"><i
+                                                    class="fas fa-eye"></i></a>
+                                            <a href="edit.html" class="btn-icon-action" title="Update Status"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <a href="https://wa.me/919823456789" target="_blank"
+                                                class="btn-icon-action btn-whatsapp" title="WhatsApp Customer"><i
+                                                    class="fab fa-whatsapp"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Activities & Alerts Section -->
+                <section class="info-container">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <div class="card-header-left">
+                                <h3>Recent Lab Activity</h3>
+                                <p>Live updates logged by repair engineers</p>
+                            </div>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon bg-green-light">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p><strong>Sunil Singh</strong> completed quality testing for
+                                        <strong>LR-2026-10281</strong> (HP Pavilion 14).
+                                    </p>
+                                    <span class="activity-time">8 minutes ago</span>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-icon bg-blue-light">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p>New booking <strong>LR-2026-10298</strong> created by customer online (Dell XPS
+                                        13 Battery).</p>
+                                    <span class="activity-time">32 minutes ago</span>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-icon bg-purple-light">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p>Job Sheet invoice generated for <strong>Neha Singh</strong> (₹4,500 paid).</p>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-icon bg-orange-light">
+                                    <i class="fas fa-comment-dots"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <p>WhatsApp status notification sent to <strong>Rajesh Jha</strong> for ticket
+                                        <strong>LR-2026-10270</strong>.
+                                    </p>
+                                    <span class="activity-time">4 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="reports.html" class="card-footer-link">View Full Audit Log</a>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-header">
+                            <div class="card-header-left">
+                                <h3>Lab & Inventory Alerts</h3>
+                                <p>Action items requiring workshop attention</p>
+                            </div>
+                        </div>
+                        <div class="alerts-list">
+                            <div class="alert-item alert-warning">
+                                <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div>
+                                    <h4>Low Inventory: 15.6" 30-Pin Slim LED Screens</h4>
+                                    <p>Only 2 replacement screen units left in stock. Re-order recommended.</p>
+                                </div>
+                            </div>
+
+                            <div class="alert-item alert-danger">
+                                <div class="alert-icon"><i class="fas fa-clock"></i></div>
+                                <div>
+                                    <h4>Awaiting Customer Approval</h4>
+                                    <p>Ticket LR-2026-10244 motherboard quote (₹3,800) pending approval for >24 hours.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="alert-item alert-success">
+                                <div class="alert-icon"><i class="fas fa-shield-alt"></i></div>
+                                <div>
+                                    <h4>Automated Database Backup Complete</h4>
+                                    <p>All job cards, customer tickets, and accounts backed up to secure cloud.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="reports.html" class="card-footer-link">Manage Workshop Alerts</a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>

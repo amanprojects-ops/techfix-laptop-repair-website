@@ -93,14 +93,16 @@ techfix-laptop-repair-website/
 ├── contact.html            # Booking form
 ├── repair-status.html      # Repair tracker
 │
-├── css/
-│   └── styles.css          # Complete design system (~41KB)
+├── assets/
+│   ├── css/
+│   │   └── styles.css          # Complete design system (~41KB)
+│   ├── js/
+│   │   └── main.js             # All interactivity (~16KB)
+│   └── images/                 # Logo & shop photos
 │
-├── js/
-│   └── main.js             # All interactivity (~16KB)
-│
-├── images/                 # Add your shop photos here
-│
+├── admin/                      # TechFix Admin Management Portal
+│   ├── assets/                 # Admin CSS, JS, and SVG Icons
+│   └── ...
 ├── .gitignore
 └── README.md
 ```

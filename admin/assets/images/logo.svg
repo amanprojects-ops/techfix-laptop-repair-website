@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 120" width="100%" height="100%">
+  <defs>
+    <!-- Background glow & gradients -->
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="50%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+    
+    <linearGradient id="accentGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#60A5FA" />
+    </linearGradient>
+
+    <linearGradient id="circuitGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#2563EB" stop-opacity="0.3" />
+    </linearGradient>
+
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="badgeShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#2563EB" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- LOGO ICON BADGE -->
+  <g transform="translate(10, 10)" filter="url(#badgeShadow)">
+    <!-- Hexagonal / Rounded Shield Background -->
+    <rect x="0" y="0" width="100" height="100" rx="24" fill="#0A0F1E" stroke="url(#primaryGrad)" stroke-width="2.5" />
+    
+    <!-- Inner ambient grid lines -->
+    <path d="M20 50 H80 M50 20 V80" stroke="url(#circuitGrad)" stroke-width="1" stroke-dasharray="3 3" opacity="0.4" />
+    
+    <!-- Laptop Base & Screen Silhouette -->
+    <!-- Screen -->
+    <rect x="25" y="24" width="50" height="34" rx="4" fill="#111827" stroke="url(#accentGrad)" stroke-width="2.2" />
+    <!-- Screen Display Area with glowing circuit/chip -->
+    <rect x="29" y="28" width="42" height="26" rx="2" fill="#030712" />
+    
+    <!-- Microchip & Circuit inside screen -->
+    <rect x="42" y="35" width="16" height="12" rx="2.5" fill="url(#primaryGrad)" />
+    <!-- Chip pins -->
+    <line x1="45" y1="32" x2="45" y2="35" stroke="#38BDF8" stroke-width="1.5" />
+    <line x1="50" y1="32" x2="50" y2="35" stroke="#38BDF8" stroke-width="1.5" />
+    <line x1="55" y1="32" x2="55" y2="35" stroke="#38BDF8" stroke-width="1.5" />
+    <line x1="45" y1="47" x2="45" y2="50" stroke="#38BDF8" stroke-width="1.5" />
+    <line x1="50" y1="47" x2="50" y2="50" stroke="#38BDF8" stroke-width="1.5" />
+    <line x1="55" y1="47" x2="55" y2="50" stroke="#38BDF8" stroke-width="1.5" />
+    
+    <!-- Laptop Base / Keyboard deck -->
+    <path d="M16 63 L22 60 H78 L84 63 C85 64 85 66 83 67 L79 69 H21 L17 67 C15 66 15 64 16 63 Z" fill="url(#primaryGrad)" />
+    <line x1="42" y1="65" x2="58" y2="65" stroke="#E0F2FE" stroke-width="2" stroke-linecap="round" />
+
+    <!-- Stylized Repair Spark / Lightning Pulse -->
+    <path d="M68 20 L61 33 L67 33 L59 48 L73 31 L66 31 Z" fill="#38BDF8" filter="url(#glow)" />
+  </g>
+
+  <!-- TYPOGRAPHY / BRAND TEXT -->
+  <g transform="translate(130, 24)">
+    <!-- Main Brand Name -->
+    <text x="0" y="48" font-family="'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif" font-weight="900" font-size="44" letter-spacing="-0.5" fill="#FFFFFF">
+      Tech<tspan fill="url(#primaryGrad)">Fix</tspan>
+    </text>
+    
+    <!-- Admin Portal Badge / Subtitle -->
+    <g transform="translate(0, 58)">
+      <rect x="0" y="0" width="168" height="22" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1" />
+      <circle cx="10" cy="11" r="3.5" fill="#10B981" />
+      <text x="20" y="15" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="#94A3B8">
+        ADMIN PORTAL
+      </text>
+    </g>
+    
+    <text x="180" y="73" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="500" letter-spacing="0.5" fill="#64748B">
+      | Laptop Repair Hub
+    </text>
+  </g>
+</svg>

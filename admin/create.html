@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intake New Laptop — TechFix Admin</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/icon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <a href="index.html" class="brand-logo-link">
+                    <img src="assets/images/logo.svg" alt="TechFix Admin" class="brand-logo-img">
+                    <img src="assets/images/icon.svg" alt="TechFix Icon" class="brand-logo-icon">
+                </a>
+            </div>
+
+            <nav class="main-nav">
+                <div class="nav-section-title">Core Operations</div>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-chart-pie"></i><span>Dashboard Overview</span></a></li>
+                    <li class="has-submenu open">
+                        <a href="#" class="menu-toggle"><i class="fas fa-laptop-medical"></i><span>Repair Jobs</span><i class="fas fa-chevron-right submenu-arrow"></i></a>
+                        <ul class="submenu">
+                            <li><a href="index.html#repair-queue"><i class="fas fa-list-ul"></i><span>Active Lab Queue</span></a></li>
+                            <li class="active"><a href="create.html"><i class="fas fa-plus-circle"></i><span>Intake New Device</span></a></li>
+                            <li><a href="reports.html"><i class="fas fa-history"></i><span>Completed Repairs</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="has-submenu">
+                        <a href="#" class="menu-toggle"><i class="fas fa-microchip"></i><span>Service Catalog</span><i class="fas fa-chevron-right submenu-arrow"></i></a>
+                        <ul class="submenu">
+                            <li class="active"><a href="create.html"><i class="fas fa-plus-circle"></i><span>Create Service</span></a></li>
+                            <li><a href="edit.html"><i class="fas fa-edit"></i><span>Edit Service Rates</span></a></li>
+                            <li><a href="view.html"><i class="fas fa-file-invoice"></i><span>Job Sheet Preview</span></a></li>
+                            <li><a href="blank.html"><i class="fas fa-layer-group"></i><span>Custom Module</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="nav-section-title">Analytics & Lab</div>
+                <ul>
+                    <li><a href="reports.html"><i class="fas fa-chart-line"></i><span>Reports & Revenue</span></a></li>
+                    <li><a href="view.html"><i class="fas fa-receipt"></i><span>Job Sheets & Invoices</span></a></li>
+                    <li><a href="../repair-status.html" target="_blank"><i class="fas fa-external-link-alt"></i><span>Live Customer Tracker</span></a></li>
+                    <li><a href="../index.html" target="_blank"><i class="fas fa-globe"></i><span>View Customer Site</span></a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar">A</div>
+                    <div class="sidebar-user-info">
+                        <div class="sidebar-user-name">Aman Sharma</div>
+                        <div class="sidebar-user-role">Lead Engineer (Admin)</div>
+                    </div>
+                </div>
+                <a href="login.html" class="logout-btn"><i class="fas fa-power-off"></i><span>Log Out</span></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle Sidebar"><i class="fas fa-bars"></i></button>
+                    <div class="header-title-wrap">
+                        <h2>New Device Intake / Job Card</h2>
+                        <span class="header-subtitle">Create a new customer repair ticket and assign technician</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <a href="index.html" class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Queue</a>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <div class="card-header-left">
+                            <h3><i class="fas fa-clipboard-list" style="color:var(--primary-color); margin-right:8px;"></i> Laptop Intake & Diagnostic Sheet</h3>
+                            <p>Enter device details, customer contact info, and issue diagnostics</p>
+                        </div>
+                        <div>
+                            <span class="ticket-id" style="font-size:14px;">Next Ticket: LR-2026-10300</span>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form class="form-container" id="createJobForm" action="view.html" method="get">
+                            <!-- Customer Details Section -->
+                            <div>
+                                <h4 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                                    <i class="fas fa-user-circle" style="color:var(--primary-color)"></i> 1. Customer Information
+                                </h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="cust-name">Customer Full Name *</label>
+                                        <input type="text" id="cust-name" name="name" placeholder="e.g. Ramesh Chandra" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cust-phone">WhatsApp / Mobile Number *</label>
+                                        <input type="tel" id="cust-phone" name="phone" placeholder="e.g. 9876543210" pattern="[0-9]{10}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cust-email">Email Address (Optional)</label>
+                                        <input type="email" id="cust-email" name="email" placeholder="e.g. ramesh@example.com">
+                                    </div>
+                                </div>
+                                <div class="form-row" style="margin-top:12px;">
+                                    <div class="form-group">
+                                        <label for="cust-address">City / Location in Saharsa</label>
+                                        <input type="text" id="cust-address" name="address" placeholder="e.g. D.B. Road, Ward No 12, Saharsa">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr style="border:none; border-top:1px solid var(--border-color); margin:8px 0;">
+
+                            <!-- Device Specifications Section -->
+                            <div>
+                                <h4 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                                    <i class="fas fa-laptop" style="color:var(--primary-color)"></i> 2. Laptop / Device Details
+                                </h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="device-brand">Brand *</label>
+                                        <select id="device-brand" name="brand" required>
+                                            <option value="" disabled selected>Select Laptop Brand</option>
+                                            <option value="Dell">Dell</option>
+                                            <option value="HP">HP</option>
+                                            <option value="Lenovo">Lenovo</option>
+                                            <option value="Apple MacBook">Apple MacBook</option>
+                                            <option value="Asus">Asus</option>
+                                            <option value="Acer">Acer</option>
+                                            <option value="MSI">MSI</option>
+                                            <option value="Samsung">Samsung</option>
+                                            <option value="Other">Other Custom Desktop / Laptop</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="device-model">Model Name / Number *</label>
+                                        <input type="text" id="device-model" name="model" placeholder="e.g. Inspiron 15 3511 / Pavilion 14" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="device-serial">Serial Number / Service Tag</label>
+                                        <input type="text" id="device-serial" name="serial" placeholder="e.g. 5CD23910XY">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="device-password">User PIN / Password (for testing)</label>
+                                        <input type="text" id="device-password" name="password" placeholder="e.g. 1234 or 'No Password'">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr style="border:none; border-top:1px solid var(--border-color); margin:8px 0;">
+
+                            <!-- Problem & Diagnostics -->
+                            <div>
+                                <h4 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                                    <i class="fas fa-stethoscope" style="color:var(--primary-color)"></i> 3. Issue Category & Diagnostics
+                                </h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="issue-category">Primary Service Required *</label>
+                                        <select id="issue-category" name="service" required>
+                                            <option value="" disabled selected>Select Primary Fault</option>
+                                            <option value="Screen Replacement">🖥️ Screen Replacement (Broken / Lines / Flicker)</option>
+                                            <option value="Motherboard Repair">⚡ Motherboard Chipset / Power IC Short</option>
+                                            <option value="Battery Replacement">🔋 Battery Replacement / Not Charging</option>
+                                            <option value="Liquid Damage Repair">💧 Liquid / Water Damage Ultrasonic Cleaning</option>
+                                            <option value="SSD & RAM Upgrade">🚀 SSD Upgrade / RAM Extension / Speed Boost</option>
+                                            <option value="Keyboard & Trackpad">⌨️ Keyboard / Touchpad Replacement</option>
+                                            <option value="Hinge & Body Repair">🛠️ Broken Hinge / Body Fabrication</option>
+                                            <option value="Thermal Servicing">❄️ Overheating / Fan Cleaning / Thermal Paste</option>
+                                            <option value="Data Recovery">💾 Data Recovery from Dead HDD/SSD</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="assigned-tech">Assign Technician *</label>
+                                        <select id="assigned-tech" name="tech" required>
+                                            <option value="Rakesh Kumar">Rakesh Kumar (Screen & Hardware Specialist)</option>
+                                            <option value="Sunil Singh">Sunil Singh (Motherboard & BGA Chip Specialist)</option>
+                                            <option value="Amit Jha">Amit Jha (Battery, Software & OS Specialist)</option>
+                                            <option value="Aman Sharma">Aman Sharma (Master Engineer - Critical Repairs)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-row" style="margin-top:12px;">
+                                    <div class="form-group" style="grid-column: 1 / -1;">
+                                        <label for="issue-desc">Detailed Fault Symptoms & Customer Notes</label>
+                                        <textarea id="issue-desc" name="notes" placeholder="Describe customer complaints, when problem started, error messages observed, etc."></textarea>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top:12px;">
+                                    <label style="font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:8px; display:block;">
+                                        Accessories Received with Device:
+                                    </label>
+                                    <div style="display:flex; flex-wrap:wrap; gap:16px; font-size:13.5px; color:var(--text-primary);">
+                                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                            <input type="checkbox" name="acc_charger" checked> Original Power Adapter / Charger
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                            <input type="checkbox" name="acc_bag"> Laptop Bag / Sleeve
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                            <input type="checkbox" name="acc_mouse"> Wireless Mouse / Dongle
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                            <input type="checkbox" name="acc_hdd"> External Drive / Pen Drive
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr style="border:none; border-top:1px solid var(--border-color); margin:8px 0;">
+
+                            <!-- Costing & Estimates -->
+                            <div>
+                                <h4 style="font-size:14px; font-weight:700; color:var(--text-primary); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                                    <i class="fas fa-coins" style="color:var(--primary-color)"></i> 4. Financials & Delivery Timeline
+                                </h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="estimated-cost">Estimated Repair Cost (₹) *</label>
+                                        <input type="number" id="estimated-cost" name="cost" placeholder="e.g. 3200" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="advance-paid">Advance Amount Paid (₹)</label>
+                                        <input type="number" id="advance-paid" name="advance" placeholder="e.g. 500" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="est-delivery">Estimated Delivery Date & Time *</label>
+                                        <input type="datetime-local" id="est-delivery" name="delivery">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="initial-status">Initial Status</label>
+                                        <select id="initial-status" name="status">
+                                            <option value="received" selected>Device Received</option>
+                                            <option value="diagnosing">In Diagnosis</option>
+                                            <option value="repairing">Approved & Repairing</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Action Buttons -->
+                            <div class="form-actions">
+                                <button type="reset" class="btn-secondary">
+                                    <i class="fas fa-undo"></i> Reset Form
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-print"></i> Generate Job Card & View Invoice
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Set default delivery date to tomorrow 5:00 PM
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(17, 0, 0, 0);
+        const formatted = tomorrow.toISOString().slice(0, 16);
+        const deliveryInput = document.getElementById('est-delivery');
+        if (deliveryInput) deliveryInput.value = formatted;
+    </script>
+</body>
+</html>
