@@ -1,0 +1,10 @@
+Options -Indexes
+
+RewriteEngine On
+
+# If requested URI is an existing file, serve it directly
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Otherwise, route everything to index.php
+RewriteRule ^ index.php [QSA,L]
