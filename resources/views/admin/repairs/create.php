@@ -4,10 +4,10 @@ $fn  = fn($k) => htmlspecialchars($old[$k] ?? '', ENT_QUOTES);
 ?>
 <header class="header">
   <div class="header-left">
-    <button id="sidebar-toggle" class="sidebar-toggle"><i class="fas fa-bars"></i></button>
+    <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle Sidebar"><i class="fas fa-bars"></i></button>
     <div class="header-title-wrap">
       <h2>New Device Intake / Job Card</h2>
-      <span class="header-subtitle">Create a new customer repair ticket</span>
+      <span class="header-subtitle">Register a new customer laptop ticket in workshop</span>
     </div>
   </div>
   <div class="header-right">
@@ -15,110 +15,139 @@ $fn  = fn($k) => htmlspecialchars($old[$k] ?? '', ENT_QUOTES);
   </div>
 </header>
 
-<div style="padding:1.5rem;max-width:900px;">
+<div style="padding:24px;max-width:960px;margin-inline:auto;">
 
   <?php if (!empty($flash_errors)): ?>
-  <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:8px;font-size:0.875rem;margin-bottom:1.25rem;font-weight:600;border:1px solid #fca5a5;">
-    <i class="fas fa-exclamation-triangle"></i>
-    <?php foreach ($flash_errors as $err): ?><div><?= htmlspecialchars($err, ENT_QUOTES) ?></div><?php endforeach; ?>
+  <div style="background:#FEF2F2;color:#991B1B;padding:14px 18px;border-radius:var(--radius-sm);font-size:0.875rem;margin-bottom:20px;font-weight:600;border:1px solid #FECACA;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+      <i class="fas fa-exclamation-circle" style="color:#EF4444;"></i>
+      <strong>Please fix the following errors:</strong>
+    </div>
+    <ul style="padding-left:24px;list-style:disc;">
+      <?php foreach ($flash_errors as $err): ?><li><?= htmlspecialchars($err, ENT_QUOTES) ?></li><?php endforeach; ?>
+    </ul>
   </div>
   <?php endif; ?>
 
-  <form method="POST" action="/admin/repairs" style="display:flex;flex-direction:column;gap:1.25rem;">
+  <form method="POST" action="/admin/repairs" style="display:flex;flex-direction:column;gap:20px;">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
 
-    <!-- Customer -->
-    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem;">
-      <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:16px;"><i class="fas fa-user"></i> Customer Information</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Full Name *</label>
-          <input type="text" name="customer_name" value="<?= $fn('customer_name') ?>" required placeholder="Customer name" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+    <!-- 1. Customer Information -->
+    <div class="form-card">
+      <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary-color);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-user-circle"></i> 1. Customer Information
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;">
+        <div class="form-field">
+          <label>Customer Full Name *</label>
+          <input type="text" name="customer_name" class="form-control" value="<?= $fn('customer_name') ?>" required placeholder="e.g. Ramesh Kumar" />
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Phone Number *</label>
-          <input type="tel" name="customer_phone" value="<?= $fn('customer_phone') ?>" required placeholder="10-digit mobile" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+        <div class="form-field">
+          <label>Mobile Number *</label>
+          <input type="tel" name="customer_phone" class="form-control" value="<?= $fn('customer_phone') ?>" required placeholder="10-digit mobile number" pattern="[0-9]{10}" />
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Email</label>
-          <input type="email" name="customer_email" value="<?= $fn('customer_email') ?>" placeholder="Optional" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+        <div class="form-field">
+          <label>Email Address</label>
+          <input type="email" name="customer_email" class="form-control" value="<?= $fn('customer_email') ?>" placeholder="Optional" />
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">City</label>
-          <input type="text" name="customer_city" value="<?= $fn('customer_city') ?>" placeholder="City" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+        <div class="form-field">
+          <label>City / Town</label>
+          <input type="text" name="customer_city" class="form-control" value="<?= $fn('customer_city') ?>" placeholder="e.g. Saharsa" />
         </div>
       </div>
     </div>
 
-    <!-- Device -->
-    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem;">
-      <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:16px;"><i class="fas fa-laptop"></i> Device Information</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Brand *</label>
-          <input type="text" name="device_brand" value="<?= $fn('device_brand') ?>" required placeholder="Dell, HP, Lenovo..." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+    <!-- 2. Device Information -->
+    <div class="form-card">
+      <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary-color);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-laptop"></i> 2. Laptop Hardware &amp; Condition
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;">
+        <div class="form-field">
+          <label>Laptop Brand *</label>
+          <input type="text" name="device_brand" class="form-control" value="<?= $fn('device_brand') ?>" required placeholder="Dell, HP, Lenovo, Apple, ASUS..." />
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Model</label>
-          <input type="text" name="device_model" value="<?= $fn('device_model') ?>" placeholder="Inspiron 15, Pavilion..." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+        <div class="form-field">
+          <label>Model Name / Number</label>
+          <input type="text" name="device_model" class="form-control" value="<?= $fn('device_model') ?>" placeholder="e.g. Inspiron 15 3520" />
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Serial Number</label>
-          <input type="text" name="serial_number" value="<?= $fn('serial_number') ?>" placeholder="Optional" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+        <div class="form-field">
+          <label>Serial Number (S/N)</label>
+          <input type="text" name="device_serial" class="form-control" value="<?= $fn('device_serial') ?>" placeholder="Optional serial / service tag" />
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Accessories</label>
-          <input type="text" name="accessories" value="<?= $fn('accessories') ?>" placeholder="Charger, bag..." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+        <div class="form-field">
+          <label>Device Color</label>
+          <input type="text" name="device_color" class="form-control" value="<?= $fn('device_color') ?>" placeholder="e.g. Silver, Black" />
         </div>
-        <div style="grid-column:1/-1;">
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Physical Condition</label>
-          <input type="text" name="physical_condition" value="<?= $fn('physical_condition') ?>" placeholder="e.g. Small scratch on lid, cracked bottom cover" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-top:16px;">
+        <div class="form-field">
+          <label>Accessories Received</label>
+          <input type="text" name="accessories_included" class="form-control" value="<?= $fn('accessories_included') ?>" placeholder="e.g. Charger, Laptop Bag, Wireless Mouse" />
         </div>
+        <div class="form-field">
+          <label>BIOS / Windows Password (if any)</label>
+          <input type="text" name="lock_pattern" class="form-control" value="<?= $fn('lock_pattern') ?>" placeholder="PIN or password to test OS" />
+        </div>
+      </div>
+
+      <div class="form-field" style="margin-top:16px;">
+        <label>Physical Condition / Pre-existing Scratches</label>
+        <textarea name="physical_condition" class="form-control" rows="2" placeholder="Note down any hinge cracks, screen scratches, or missing rubber feet at intake..."><?= $fn('physical_condition') ?></textarea>
       </div>
     </div>
 
-    <!-- Repair Details -->
-    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem;">
-      <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:16px;"><i class="fas fa-tools"></i> Repair Details</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;">
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Service Type</label>
-          <select name="service_id" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;">
-            <option value="">— Select Service —</option>
-            <?php foreach ($services as $svc): ?>
-            <option value="<?= $svc['id'] ?>"><?= htmlspecialchars($svc['name'], ENT_QUOTES) ?></option>
+    <!-- 3. Fault & Service Assignment -->
+    <div class="form-card">
+      <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary-color);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-tools"></i> 3. Problem Reported &amp; Assignment
+      </div>
+
+      <div class="form-field">
+        <label>Customer Reported Issue *</label>
+        <textarea name="problem_description" class="form-control" rows="3" required placeholder="Detailed issue description (e.g. laptop not turning on after power surge, screen black but fan spinning)..."><?= $fn('problem_description') ?></textarea>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-top:16px;">
+        <div class="form-field">
+          <label>Assigned Service Category</label>
+          <select name="service_id" class="form-control">
+            <option value="">— Select Service Category —</option>
+            <?php foreach (($services ?? []) as $s): ?>
+            <option value="<?= $s['id'] ?>" <?= ($old['service_id'] ?? '') == $s['id'] ? 'selected' : '' ?>>
+              <?= htmlspecialchars($s['name'], ENT_QUOTES) ?> (From ₹<?= number_format((float)$s['starting_price'], 0) ?>)
+            </option>
             <?php endforeach; ?>
           </select>
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Assign Technician</label>
-          <select name="technician_id" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;">
-            <option value="">— Assign Later —</option>
-            <?php foreach ($technicians as $t): ?>
-            <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['name'], ENT_QUOTES) ?></option>
+        <div class="form-field">
+          <label>Assign to Technician</label>
+          <select name="technician_id" class="form-control">
+            <option value="">— Select Technician —</option>
+            <?php foreach (($technicians ?? []) as $t): ?>
+            <option value="<?= $t['id'] ?>" <?= ($old['technician_id'] ?? '') == $t['id'] ? 'selected' : '' ?>>
+              <?= htmlspecialchars($t['name'], ENT_QUOTES) ?>
+            </option>
             <?php endforeach; ?>
           </select>
         </div>
-        <div>
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Priority</label>
-          <select name="priority" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;">
-            <option value="low">Low</option>
-            <option value="normal" selected>Normal</option>
-            <option value="high">High</option>
-            <option value="urgent">Urgent</option>
-          </select>
+        <div class="form-field">
+          <label>Estimated Cost (₹)</label>
+          <input type="number" name="estimated_cost" class="form-control" value="<?= $fn('estimated_cost') ?>" placeholder="0" min="0" />
         </div>
-        <div style="grid-column:1/-1;">
-          <label style="font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Problem Description *</label>
-          <textarea name="problem_description" rows="3" required placeholder="Describe what the customer reported..." style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;resize:vertical;"><?= $fn('problem_description') ?></textarea>
+        <div class="form-field">
+          <label>Advance Payment (₹)</label>
+          <input type="number" name="advance_amount" class="form-control" value="<?= $fn('advance_amount') ?>" placeholder="0" min="0" />
         </div>
       </div>
     </div>
 
-    <div style="display:flex;gap:12px;">
-      <button type="submit" style="font-size:0.9rem;font-weight:700;padding:10px 24px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;"><i class="fas fa-laptop-medical"></i> Create Repair Job</button>
-      <a href="/admin/repairs" style="font-size:0.9rem;font-weight:600;padding:10px 20px;border-radius:8px;background:var(--card-bg);color:var(--text-muted);border:1px solid var(--border);text-decoration:none;">Cancel</a>
+    <div style="display:flex;gap:12px;justify-content:flex-end;">
+      <a href="/admin/repairs" class="btn-secondary">Cancel</a>
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-save"></i> Generate Ticket &amp; Intake Device
+      </button>
     </div>
-
   </form>
 </div>

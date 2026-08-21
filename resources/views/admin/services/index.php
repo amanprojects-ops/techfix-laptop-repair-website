@@ -1,79 +1,100 @@
 <header class="header">
   <div class="header-left">
-    <button id="sidebar-toggle" class="sidebar-toggle"><i class="fas fa-bars"></i></button>
+    <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle Sidebar"><i class="fas fa-bars"></i></button>
     <div class="header-title-wrap">
       <h2>Service Catalog</h2>
-      <span class="header-subtitle">Manage repair services shown on the website</span>
+      <span class="header-subtitle">Manage laptop repair services displayed on customer website</span>
     </div>
   </div>
 </header>
-<div style="padding:1.5rem;display:grid;grid-template-columns:1fr 340px;gap:1.5rem;">
 
-  <!-- Services Table -->
-  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-    <?php if ($flash_success): ?><div style="background:#d1fae5;color:#065f46;padding:12px 16px;font-size:0.875rem;font-weight:600;">✓ <?= htmlspecialchars($flash_success, ENT_QUOTES) ?></div><?php endif; ?>
-    <table style="width:100%;border-collapse:collapse;">
-      <thead><tr style="background:var(--table-header);">
-        <th style="padding:10px 16px;text-align:left;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Service</th>
-        <th style="padding:10px 16px;text-align:left;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Starting Price</th>
-        <th style="padding:10px 16px;text-align:left;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Est. Days</th>
-        <th style="padding:10px 16px;text-align:left;font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">Status</th>
-        <th style="padding:10px 16px;"></th>
-      </tr></thead>
-      <tbody>
-        <?php foreach ($services as $svc): ?>
-        <tr style="border-top:1px solid var(--border);">
-          <td style="padding:12px 16px;">
-            <div style="font-weight:600;color:var(--text);font-size:0.875rem;"><?= htmlspecialchars($svc['name'], ENT_QUOTES) ?></div>
-            <div style="font-size:0.78rem;color:var(--text-muted);"><?= htmlspecialchars(mb_strimwidth($svc['short_description'] ?? '', 0, 60, '...'), ENT_QUOTES) ?></div>
-          </td>
-          <td style="padding:12px 16px;font-size:0.875rem;font-weight:700;color:var(--text);">₹<?= number_format((float)$svc['starting_price'], 0) ?></td>
-          <td style="padding:12px 16px;font-size:0.875rem;color:var(--text-muted);"><?= (int)$svc['estimated_days'] ?> day<?= $svc['estimated_days'] > 1 ? 's' : '' ?></td>
-          <td style="padding:12px 16px;">
-            <span style="font-size:0.75rem;font-weight:700;padding:4px 10px;border-radius:999px;background:<?= $svc['status']==='active' ? '#d1fae5' : '#fee2e2' ?>;color:<?= $svc['status']==='active' ? '#065f46' : '#991b1b' ?>;">
-              <?= ucfirst($svc['status']) ?>
-            </span>
-          </td>
-          <td style="padding:12px 16px;text-align:right;">
-            <form method="POST" action="/admin/services/<?= $svc['id'] ?>/delete" style="display:inline;">
-              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
-              <button type="submit" onclick="return confirm('Deactivate this service?')" style="font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-muted);cursor:pointer;">Deactivate</button>
-            </form>
-          </td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
+<div style="padding:24px;display:grid;grid-template-columns:1fr 340px;gap:24px;">
+
+  <!-- Services Table Card -->
+  <div class="table-card" style="height:fit-content;">
+    <?php if (!empty($flash_success)): ?>
+    <div style="background:#ECFDF5;border-bottom:1px solid #A7F3D0;color:#065F46;padding:12px 18px;font-size:0.875rem;font-weight:700;">
+      <i class="fas fa-check-circle" style="color:#10B981;"></i> <?= htmlspecialchars($flash_success, ENT_QUOTES) ?>
+    </div>
+    <?php endif; ?>
+
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Service Name</th>
+            <th>Starting Price</th>
+            <th>Est. Turnaround</th>
+            <th>Status</th>
+            <th style="text-align:right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($services as $svc): ?>
+          <tr>
+            <td>
+              <div style="font-weight:800;color:var(--text-primary);font-size:0.9rem;"><?= htmlspecialchars($svc['name'], ENT_QUOTES) ?></div>
+              <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px;"><?= htmlspecialchars(mb_strimwidth($svc['short_description'] ?? '', 0, 60, '...'), ENT_QUOTES) ?></div>
+            </td>
+            <td>
+              <span style="font-weight:800;color:var(--primary-color);">₹<?= number_format((float)$svc['starting_price'], 0) ?></span>
+            </td>
+            <td>
+              <span style="font-size:0.85rem;color:var(--text-secondary);font-weight:500;">
+                <i class="fas fa-clock" style="font-size:12px;color:var(--text-muted);margin-right:4px;"></i>
+                <?= (int)$svc['estimated_days'] ?> day<?= $svc['estimated_days'] > 1 ? 's' : '' ?>
+              </span>
+            </td>
+            <td>
+              <span class="status-pill" style="background:<?= $svc['status']==='active' ? '#ECFDF5' : '#FEF2F2' ?>;color:<?= $svc['status']==='active' ? '#065F46' : '#991B1B' ?>;border:1px solid <?= $svc['status']==='active' ? '#A7F3D0' : '#FECACA' ?>;">
+                <?= ucfirst($svc['status']) ?>
+              </span>
+            </td>
+            <td style="text-align:right;">
+              <form method="POST" action="/admin/services/<?= $svc['id'] ?>/delete" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
+                <button type="submit" onclick="return confirm('Toggle status for this service?')" class="btn-secondary btn-sm" style="color:var(--text-muted);">
+                  <?= $svc['status']==='active' ? 'Deactivate' : 'Activate' ?>
+                </button>
+              </form>
+            </td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Add Service -->
-  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem;height:fit-content;">
-    <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:16px;"><i class="fas fa-plus"></i> Add New Service</div>
-    <form method="POST" action="/admin/services" style="display:flex;flex-direction:column;gap:12px;">
+  <!-- Add New Service Card -->
+  <div class="form-card" style="height:fit-content;">
+    <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary-color);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+      <i class="fas fa-plus-circle"></i> Add New Service
+    </div>
+    <form method="POST" action="/admin/services" style="display:flex;flex-direction:column;gap:14px;">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
-      <div>
-        <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Service Name *</label>
-        <input type="text" name="name" required placeholder="e.g. Keyboard Replacement" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+      <div class="form-field">
+        <label>Service Name *</label>
+        <input type="text" name="name" required placeholder="e.g. Keyboard Replacement" class="form-control" />
       </div>
-      <div>
-        <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Short Description</label>
-        <textarea name="short_description" rows="2" placeholder="Brief description..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;resize:vertical;"></textarea>
+      <div class="form-field">
+        <label>Short Description</label>
+        <textarea name="short_description" rows="2" placeholder="Brief 1-line description..." class="form-control"></textarea>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Starting Price (₹)</label>
-          <input type="number" name="starting_price" min="0" step="50" placeholder="0" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
-        </div>
-        <div>
-          <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Est. Days</label>
-          <input type="number" name="estimated_days" min="1" value="1" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
-        </div>
+      <div class="form-field">
+        <label>Starting Price (₹) *</label>
+        <input type="number" name="starting_price" required placeholder="e.g. 1499" min="0" step="1" class="form-control" />
       </div>
-      <div>
-        <label style="font-size:0.78rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Icon (Lucide name)</label>
-        <input type="text" name="icon" placeholder="wrench, monitor, cpu..." style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-bg);color:var(--text);font-size:0.875rem;" />
+      <div class="form-field">
+        <label>Estimated Days</label>
+        <input type="number" name="estimated_days" value="1" min="1" max="30" class="form-control" />
       </div>
-      <button type="submit" style="font-size:0.875rem;font-weight:700;padding:9px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;"><i class="fas fa-plus"></i> Add Service</button>
+      <div class="form-field">
+        <label>Warranty (Days)</label>
+        <input type="number" name="warranty_days" value="90" min="0" max="365" class="form-control" />
+      </div>
+      <button type="submit" class="btn-primary" style="justify-content:center;margin-top:6px;">
+        <i class="fas fa-plus"></i> Create Service
+      </button>
     </form>
   </div>
 
