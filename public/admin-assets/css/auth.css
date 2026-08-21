@@ -8,7 +8,14 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html, body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.fa, .fas, .far, .fab, .fa-solid, .fa-regular, .fa-brands, [class^="fa-"], [class*=" fa-"], [class^="fa-"]::before, [class*=" fa-"]::before {
+    font-family: "Font Awesome 6 Free", "FontAwesome" !important;
 }
 
 body.auth-body {
