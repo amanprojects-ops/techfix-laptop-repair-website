@@ -40,6 +40,24 @@ if ($appConfig['debug']) {
 // Start session
 \App\Core\Session::start();
 
+// ── Maintenance Mode Check ────────────────────────────────────────────────
+if (is_maintenance_mode()) {
+    $uri = $_SERVER['REQUEST_URI'] ?? '/';
+    $prefix = base_url_prefix();
+    if ($prefix && str_starts_with($uri, $prefix)) {
+        $uri = substr($uri, strlen($prefix));
+    }
+    $path = '/' . ltrim(parse_url($uri, PHP_URL_PATH) ?? '', '/');
+
+    // Allow admin routes and logged-in administrators
+    if (!str_starts_with($path, '/admin') && !\App\Core\Session::isAdmin()) {
+        http_response_code(503);
+        header('Retry-After: 3600');
+        require BASE_PATH . '/resources/views/frontend/maintenance.php';
+        exit;
+    }
+}
+
 // ── Router ────────────────────────────────────────────────────────────────
 $router  = new \App\Core\Router();
 $request = new \App\Core\Request();

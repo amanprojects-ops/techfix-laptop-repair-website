@@ -65,8 +65,8 @@
         <strong style="color:var(--accent);display:flex;align-items:center;gap:6px;margin-bottom:4px;">
           <i data-lucide="help-circle" style="width:16px;height:16px;"></i> Don't have your Repair ID?
         </strong>
-        Call our workshop at <a href="tel:+919876543210" style="color:var(--accent);font-weight:700;">+91 98765 43210</a> or
-        <a href="https://wa.me/919876543210" style="color:#16A34A;font-weight:700;" target="_blank" rel="noopener">WhatsApp Us</a>
+        Call our workshop at <a href="tel:<?= htmlspecialchars(site_phone(), ENT_QUOTES) ?>" style="color:var(--accent);font-weight:700;"><?= htmlspecialchars(site_phone(), ENT_QUOTES) ?></a> or
+        <a href="<?= site_whatsapp_link('Hello, I do not have my Repair ID. Can you please check my status?') ?>" style="color:#16A34A;font-weight:700;" target="_blank" rel="noopener">WhatsApp Us</a>
         and we will look it up using your phone number.
       </div>
     </div>

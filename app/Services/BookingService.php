@@ -94,6 +94,40 @@ class BookingService
 
             Database::commit();
 
+            // 7. Send admin notification email if enabled in system settings
+            try {
+                if ((string)setting('notify_on_new_booking', '1') === '1') {
+                    $adminEmail = (string)setting('admin_notification_email', setting('contact_email', ''));
+                    if (!empty($adminEmail)) {
+                        $mailer = new \App\Services\MailService();
+                        $custName = htmlspecialchars($data['customer_name'] ?? 'Customer', ENT_QUOTES);
+                        $custPhone = htmlspecialchars($data['customer_phone'] ?? '', ENT_QUOTES);
+                        $brand = htmlspecialchars($data['device_brand'] ?? 'Device', ENT_QUOTES);
+                        $problem = nl2br(htmlspecialchars($data['problem_description'] ?? '', ENT_QUOTES));
+                        $site = htmlspecialchars(site_name(), ENT_QUOTES);
+                        
+                        $subject = "⚡ [{$trackingId}] New Repair Intake — {$custName}";
+                        $body = "
+                        <div style=\"font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;\">
+                            <h2 style=\"color: #2563eb; margin-top: 0;\">New Repair Intake — {$site}</h2>
+                            <p>A new repair booking has been submitted:</p>
+                            <table style=\"width: 100%; border-collapse: collapse; margin: 15px 0;\">
+                                <tr style=\"background: #f8fafc;\"><td style=\"padding: 8px; font-weight: bold; width: 35%; border: 1px solid #e2e8f0;\">Tracking ID</td><td style=\"padding: 8px; border: 1px solid #e2e8f0; color: #2563eb; font-weight: bold;\">{$trackingId}</td></tr>
+                                <tr><td style=\"padding: 8px; font-weight: bold; border: 1px solid #e2e8f0;\">Customer Name</td><td style=\"padding: 8px; border: 1px solid #e2e8f0;\">{$custName}</td></tr>
+                                <tr style=\"background: #f8fafc;\"><td style=\"padding: 8px; font-weight: bold; border: 1px solid #e2e8f0;\">Phone Number</td><td style=\"padding: 8px; border: 1px solid #e2e8f0;\">{$custPhone}</td></tr>
+                                <tr><td style=\"padding: 8px; font-weight: bold; border: 1px solid #e2e8f0;\">Device Brand</td><td style=\"padding: 8px; border: 1px solid #e2e8f0;\">{$brand}</td></tr>
+                                <tr style=\"background: #f8fafc;\"><td style=\"padding: 8px; font-weight: bold; border: 1px solid #e2e8f0;\">Problem</td><td style=\"padding: 8px; border: 1px solid #e2e8f0;\">{$problem}</td></tr>
+                            </table>
+                            <p><a href=\"" . url('/admin/repairs/' . $repairId) . "\" style=\"display: inline-block; padding: 10px 18px; background: #2563eb; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;\">Open Repair Job in Admin &rarr;</a></p>
+                        </div>";
+
+                        $mailer->send($adminEmail, $subject, $body);
+                    }
+                }
+            } catch (\Throwable) {
+                // Ignore background notification exceptions to avoid failing user transaction
+            }
+
             return $trackingId;
 
         } catch (\Throwable $e) {

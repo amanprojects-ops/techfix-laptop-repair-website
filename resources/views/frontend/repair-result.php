@@ -292,17 +292,17 @@ if ($currentStageIndex === false) {
         <span style="font-size:0.875rem;color:var(--text);">Our technician is available on call &amp; WhatsApp for any queries.</span>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <a href="https://wa.me/919876543210?text=<?= urlencode('Hi TechFix, I am inquiring about my Repair Ticket ID: ' . $repair['tracking_id']) ?>" target="_blank" rel="noopener" class="btn btn--whatsapp btn--sm">
+        <a href="<?= site_whatsapp_link('Hi ' . site_name() . ', I am inquiring about my Repair Ticket ID: ' . $repair['tracking_id']) ?>" target="_blank" rel="noopener" class="btn btn--whatsapp btn--sm">
           <i data-lucide="message-circle"></i> WhatsApp Us
         </a>
-        <a href="tel:+919876543210" class="btn btn--primary btn--sm">
+        <a href="tel:<?= htmlspecialchars(site_phone(), ENT_QUOTES) ?>" class="btn btn--primary btn--sm">
           <i data-lucide="phone"></i> Call Workshop
         </a>
       </div>
     </div>
 
     <div style="text-align:center;margin-top:28px;">
-      <a href="/track-repair" class="btn btn--secondary"><i data-lucide="arrow-left"></i> Track Another Device</a>
+      <a href="<?= url('/track-repair') ?>" class="btn btn--secondary"><i data-lucide="arrow-left"></i> Track Another Device</a>
     </div>
 
   </div>

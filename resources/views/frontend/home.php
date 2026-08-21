@@ -19,10 +19,10 @@
         <span><i data-lucide="check-circle"></i> 90-Day Warranty</span>
       </div>
       <div class="hero__cta">
-        <a href="/book-repair" class="btn btn--primary btn--lg">
+        <a href="<?= url('/book-repair') ?>" class="btn btn--primary btn--lg">
           <i data-lucide="wrench"></i> Book a Repair
         </a>
-        <a href="https://wa.me/919876543210" class="btn btn--whatsapp btn--lg" target="_blank" rel="noopener">
+        <a href="<?= site_whatsapp_link() ?>" class="btn btn--whatsapp btn--lg" target="_blank" rel="noopener">
           <i data-lucide="message-circle"></i> WhatsApp Us
         </a>
       </div>
@@ -481,21 +481,21 @@
           <div class="location-detail__icon"><i data-lucide="map-pin"></i></div>
           <div>
             <strong>Address</strong>
-            <p>Main Market Road, Near Bus Stand,<br />Saharsa, Bihar — 852201</p>
+            <p><?= nl2br(htmlspecialchars(site_address(), ENT_QUOTES)) ?></p>
           </div>
         </div>
         <div class="location-detail">
           <div class="location-detail__icon"><i data-lucide="phone"></i></div>
           <div>
             <strong>Phone</strong>
-            <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+            <p><a href="tel:<?= htmlspecialchars(site_phone(), ENT_QUOTES) ?>"><?= htmlspecialchars(site_phone(), ENT_QUOTES) ?></a></p>
           </div>
         </div>
         <div class="location-detail">
           <div class="location-detail__icon"><i data-lucide="clock"></i></div>
           <div>
             <strong>Working Hours</strong>
-            <p>Monday – Saturday: 9:00 AM – 8:00 PM<br />Sunday: Closed</p>
+            <p><?= nl2br(htmlspecialchars((string)setting('working_hours', 'Monday – Saturday: 9:00 AM – 8:00 PM'), ENT_QUOTES)) ?></p>
           </div>
         </div>
         <div class="location-detail">
@@ -505,15 +505,15 @@
             <p>Supaul • Madhepura • Khagaria • Purnia</p>
           </div>
         </div>
-        <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn--primary" style="margin-top:1rem;">
+        <a href="<?= htmlspecialchars((string)setting('google_map_url', 'https://maps.google.com'), ENT_QUOTES) ?>" target="_blank" rel="noopener" class="btn btn--primary" style="margin-top:1rem;">
           <i data-lucide="navigation"></i> Get Directions
         </a>
       </div>
       <div class="location__map">
         <div class="map-placeholder">
           <i data-lucide="map-pin"></i>
-          <p>TechFix Laptop Repair Center</p>
-          <span>Saharsa, Bihar</span>
+          <p><?= htmlspecialchars(site_name(), ENT_QUOTES) ?> Repair Center</p>
+          <span><?= htmlspecialchars(setting('city', 'Saharsa') . ', ' . setting('state', 'Bihar'), ENT_QUOTES) ?></span>
         </div>
       </div>
     </div>
@@ -527,13 +527,13 @@
     <h2>Get Your Laptop Fixed Today</h2>
     <p>Stop struggling with a broken laptop. Walk in or book online — we'll take it from here.</p>
     <div class="final-cta__btns">
-      <a href="/book-repair" class="btn btn--primary btn--lg">
+      <a href="<?= url('/book-repair') ?>" class="btn btn--primary btn--lg">
         <i data-lucide="wrench"></i> Book a Repair
       </a>
-      <a href="tel:+919876543210" class="btn btn--outline btn--lg">
+      <a href="tel:<?= htmlspecialchars(site_phone(), ENT_QUOTES) ?>" class="btn btn--outline btn--lg">
         <i data-lucide="phone"></i> Call Now
       </a>
-      <a href="https://wa.me/919876543210" class="btn btn--whatsapp btn--lg" target="_blank" rel="noopener">
+      <a href="<?= site_whatsapp_link() ?>" class="btn btn--whatsapp btn--lg" target="_blank" rel="noopener">
         <i data-lucide="message-circle"></i> WhatsApp
       </a>
     </div>
