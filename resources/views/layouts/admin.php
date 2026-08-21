@@ -1,4 +1,8 @@
-<?php use App\Core\Session; Session::start(); ?>
+<?php 
+use App\Core\Session; 
+Session::start(); 
+$currentUri = $_SERVER['REQUEST_URI'] ?? '/admin/dashboard';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,10 +36,10 @@
     <nav class="main-nav">
       <div class="nav-section-title">Workshop Operations</div>
       <ul>
-        <li class="<?= (str_contains($_SERVER['REQUEST_URI'], '/admin/dashboard') || $_SERVER['REQUEST_URI'] === '/admin') ? 'active' : '' ?>">
+        <li class="<?= (str_contains($currentUri, '/admin/dashboard') || $currentUri === '/admin') ? 'active' : '' ?>">
           <a href="/admin/dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
         </li>
-        <li class="has-submenu <?= str_contains($_SERVER['REQUEST_URI'], '/admin/repairs') ? 'open' : '' ?>">
+        <li class="has-submenu <?= str_contains($currentUri, '/admin/repairs') ? 'open' : '' ?>">
           <a href="#" class="menu-toggle"><i class="fas fa-laptop-medical"></i><span>Repair Jobs</span><i class="fas fa-chevron-right submenu-arrow"></i></a>
           <ul class="submenu">
             <li><a href="/admin/repairs"><i class="fas fa-list-ul"></i><span>Active Lab Queue</span></a></li>
@@ -43,7 +47,7 @@
             <li><a href="/admin/repairs?status=DELIVERED"><i class="fas fa-history"></i><span>Completed Repairs</span></a></li>
           </ul>
         </li>
-        <li class="has-submenu <?= str_contains($_SERVER['REQUEST_URI'], '/admin/services') ? 'open' : '' ?>">
+        <li class="has-submenu <?= str_contains($currentUri, '/admin/services') ? 'open' : '' ?>">
           <a href="#" class="menu-toggle"><i class="fas fa-microchip"></i><span>Service Catalog</span><i class="fas fa-chevron-right submenu-arrow"></i></a>
           <ul class="submenu">
             <li><a href="/admin/services"><i class="fas fa-layer-group"></i><span>Manage Services</span></a></li>
@@ -53,10 +57,10 @@
 
       <div class="nav-section-title">People &amp; Staff</div>
       <ul>
-        <li class="<?= str_contains($_SERVER['REQUEST_URI'], '/admin/customers') ? 'active' : '' ?>">
+        <li class="<?= str_contains($currentUri, '/admin/customers') ? 'active' : '' ?>">
           <a href="/admin/customers"><i class="fas fa-users"></i><span>Customers</span></a>
         </li>
-        <li class="<?= str_contains($_SERVER['REQUEST_URI'], '/admin/technicians') ? 'active' : '' ?>">
+        <li class="<?= str_contains($currentUri, '/admin/technicians') ? 'active' : '' ?>">
           <a href="/admin/technicians"><i class="fas fa-user-cog"></i><span>Technicians</span></a>
         </li>
       </ul>

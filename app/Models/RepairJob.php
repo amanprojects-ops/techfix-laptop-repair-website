@@ -112,10 +112,12 @@ class RepairJob
             "SELECT r.id, r.tracking_id, r.current_status, r.priority, r.received_at, r.estimated_amount, r.final_amount,
                     c.name AS customer_name, c.phone AS customer_phone,
                     d.brand AS device_brand, d.model AS device_model,
+                    s.name AS service_name,
                     u.name AS technician_name
              FROM repair_jobs r
              LEFT JOIN customers c ON c.id = r.customer_id
              LEFT JOIN devices   d ON d.id = r.device_id
+             LEFT JOIN services  s ON s.id = r.service_id
              LEFT JOIN users     u ON u.id = r.assigned_technician_id
              {$where}
              ORDER BY r.created_at DESC
@@ -137,11 +139,16 @@ class RepairJob
     public static function todayJobs(): array
     {
         return Database::fetchAll(
-            "SELECT r.id, r.tracking_id, r.current_status, r.priority,
-                    c.name AS customer_name, d.brand AS device_brand, d.model AS device_model
+            "SELECT r.id, r.tracking_id, r.current_status, r.priority, r.received_at, r.estimated_amount, r.final_amount,
+                    c.name AS customer_name, c.phone AS customer_phone,
+                    d.brand AS device_brand, d.model AS device_model,
+                    s.name AS service_name,
+                    u.name AS technician_name
              FROM repair_jobs r
              LEFT JOIN customers c ON c.id = r.customer_id
              LEFT JOIN devices   d ON d.id = r.device_id
+             LEFT JOIN services  s ON s.id = r.service_id
+             LEFT JOIN users     u ON u.id = r.assigned_technician_id
              WHERE DATE(r.received_at) = CURDATE()
              ORDER BY r.received_at DESC"
         );
