@@ -7,6 +7,7 @@ use App\Controllers\Admin\RepairController;
 use App\Controllers\Admin\CustomerController;
 use App\Controllers\Admin\TechnicianController;
 use App\Controllers\Admin\ServiceController;
+use App\Controllers\Admin\SettingsController;
 
 /** @var Router $router */
 
@@ -18,6 +19,16 @@ $router->post('/admin/logout',                      [AuthController::class,     
 // Dashboard
 $router->get('/admin/dashboard',                    [DashboardController::class,  'index']);
 $router->get('/admin',                              [DashboardController::class,  'index']);
+
+// System Manager / Settings
+$router->get('/admin/settings',                     [SettingsController::class,   'index']);
+$router->post('/admin/settings/general',            [SettingsController::class,   'updateGeneral']);
+$router->post('/admin/settings/seo',                [SettingsController::class,   'updateSeo']);
+$router->post('/admin/settings/branding',           [SettingsController::class,   'updateBranding']);
+$router->post('/admin/settings/reset-branding',     [SettingsController::class,   'resetBranding']);
+$router->post('/admin/settings/mail',               [SettingsController::class,   'updateMail']);
+$router->post('/admin/settings/mail/test',          [SettingsController::class,   'sendTestEmail']);
+$router->post('/admin/settings/workshop',           [SettingsController::class,   'updateWorkshop']);
 
 // Repairs
 $router->get('/admin/repairs',                      [RepairController::class,     'index']);
