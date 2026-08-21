@@ -1,3 +1,7 @@
+# ============================================================
+# TechFix Laptop Repair — Root Apache Configuration for Shared Hosting
+# ============================================================
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
@@ -5,19 +9,25 @@
 
     RewriteEngine On
 
-    # Handle Authorization Header
+    # Pass Authorization Headers
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Direct access to public folder if explicitly requested
+    # Prevent loop if already rewritten to public
     RewriteCond %{REQUEST_URI} ^/public/ [NC]
     RewriteRule ^ - [L]
 
-    # If requested static asset exists in public directory, serve it
-    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f [OR]
-    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -d
+    # If static asset exists in public folder, rewrite directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ public/$1 [L]
 
-    # Send all other requests to public/index.php
-    RewriteRule ^ public/index.php [QSA,L]
+    # Route root requests to public/
+    RewriteRule ^$ public/ [L]
 </IfModule>
+
+# Block sensitive directories and files from direct web access
+<FilesMatch "^\.(env|git|gitignore)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

@@ -30,17 +30,26 @@ class Request
 
     public function uri(): string
     {
-        $uri = $this->server['REQUEST_URI'] ?? '/';
+        $uri  = $this->server['REQUEST_URI'] ?? '/';
         $path = parse_url($uri, PHP_URL_PATH) ?: '/';
 
-        // Strip script base directory if running in subdirectory (e.g. /test/aman-laptop-reparing/public/)
-        $scriptName = $this->server['SCRIPT_NAME'] ?? '';
-        $baseDir = str_replace('\\', '/', dirname($scriptName));
-        if ($baseDir !== '/' && $baseDir !== '.' && $baseDir !== '' && str_starts_with($path, $baseDir)) {
-            $path = substr($path, strlen($baseDir));
+        // 1. Strip script directory if installed in subfolder (e.g. /my-app/ or /test/project/)
+        $scriptName = str_replace('\\', '/', $this->server['SCRIPT_NAME'] ?? '');
+        $scriptDir  = dirname($scriptName);
+        $cleanScriptDir = preg_replace('#/public$#', '', $scriptDir);
+
+        if ($cleanScriptDir !== '/' && $cleanScriptDir !== '.' && $cleanScriptDir !== '' && str_starts_with($path, $cleanScriptDir)) {
+            $path = substr($path, strlen($cleanScriptDir));
         }
 
-        // Clean and normalize path
+        // 2. If path starts with /public/, strip it so both /public/route and /route match
+        if (str_starts_with($path, '/public/')) {
+            $path = substr($path, 7);
+        } elseif ($path === '/public') {
+            $path = '/';
+        }
+
+        // 3. Clean and normalize path
         $path = '/' . trim((string)$path, '/');
         return $path === '/' ? '/' : rtrim($path, '/');
     }

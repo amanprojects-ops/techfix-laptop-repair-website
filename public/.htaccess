@@ -1,10 +1,23 @@
-Options -Indexes
+# ============================================================
+# TechFix Laptop Repair — Public Front Controller .htaccess
+# ============================================================
 
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
 
-# If requested URI is an existing file, serve it directly
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^ - [L]
+    RewriteEngine On
 
-# Otherwise, route everything to index.php
-RewriteRule ^ index.php [QSA,L]
+    # Pass Authorization Headers
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # If requested resource is an existing file or directory, serve it directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Otherwise send all requests to index.php
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
