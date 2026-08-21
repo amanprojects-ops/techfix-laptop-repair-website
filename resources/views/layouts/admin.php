@@ -15,6 +15,9 @@ $currentUri = $_SERVER['REQUEST_URI'] ?? '/admin/dashboard';
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
+  <!-- Favicon -->
+  <link rel="icon" href="<?= site_favicon() ?>" />
+
   <!-- Font Awesome 6.5 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
@@ -28,8 +31,8 @@ $currentUri = $_SERVER['REQUEST_URI'] ?? '/admin/dashboard';
   <aside class="sidebar" id="sidebar">
     <div class="logo-container">
       <a href="<?= url('/admin/dashboard') ?>" class="brand-logo-link">
-        <img src="<?= asset('/admin-assets/images/logo.svg') ?>" alt="TechFix Admin" class="brand-logo-img" />
-        <img src="<?= asset('/admin-assets/images/icon.svg') ?>" alt="TechFix Icon" class="brand-logo-icon" />
+        <img src="<?= admin_logo() ?>" alt="<?= htmlspecialchars(site_name(), ENT_QUOTES) ?> Admin" class="brand-logo-img" />
+        <img src="<?= admin_icon() ?>" alt="<?= htmlspecialchars(site_name(), ENT_QUOTES) ?> Icon" class="brand-logo-icon" />
       </a>
     </div>
 
@@ -62,6 +65,13 @@ $currentUri = $_SERVER['REQUEST_URI'] ?? '/admin/dashboard';
         </li>
         <li class="<?= str_contains($currentUri, '/admin/technicians') ? 'active' : '' ?>">
           <a href="<?= url('/admin/technicians') ?>"><i class="fas fa-user-cog"></i><span>Technicians</span></a>
+        </li>
+      </ul>
+
+      <div class="nav-section-title">System &amp; Settings</div>
+      <ul>
+        <li class="<?= str_contains($currentUri, '/admin/settings') ? 'active' : '' ?>">
+          <a href="<?= url('/admin/settings') ?>"><i class="fas fa-sliders-h"></i><span>System Manager</span></a>
         </li>
       </ul>
 
