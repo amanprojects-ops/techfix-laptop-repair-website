@@ -11,7 +11,7 @@ class AuthMiddleware
         Session::start();
         if (!Session::isLoggedIn()) {
             Session::flash('error', 'Please login to continue.');
-            header('Location: /admin/login');
+            header('Location: ' . url('/admin/login'));
             exit;
         }
     }

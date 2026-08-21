@@ -39,6 +39,9 @@ class Controller
     /** Redirect to a URL */
     protected function redirect(string $url): never
     {
+        if (str_starts_with($url, '/')) {
+            $url = url($url);
+        }
         header('Location: ' . $url);
         exit;
     }

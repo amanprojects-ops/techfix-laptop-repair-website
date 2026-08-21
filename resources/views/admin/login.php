@@ -21,14 +21,14 @@ $flash_error = $flash_error ?? Session::getFlash('error');
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/admin-assets/css/styles.css" />
-  <link rel="stylesheet" href="/admin-assets/css/auth.css" />
+  <link rel="stylesheet" href="<?= asset('/admin-assets/css/styles.css') ?>" />
+  <link rel="stylesheet" href="<?= asset('/admin-assets/css/auth.css') ?>" />
 </head>
 <body class="auth-body">
   <div class="auth-container">
     <div class="auth-card">
       <div class="auth-header">
-        <a href="/"><img src="/admin-assets/images/logo.svg" alt="TechFix Admin" class="auth-brand-logo" /></a>
+        <a href="<?= url('/') ?>"><img src="<?= asset('/admin-assets/images/logo.svg') ?>" alt="TechFix Admin" class="auth-brand-logo" /></a>
         <h2>Technician &amp; Admin Portal</h2>
         <p>Sign in to access workshop repair queue &amp; billing</p>
       </div>
@@ -40,7 +40,7 @@ $flash_error = $flash_error ?? Session::getFlash('error');
       </div>
       <?php endif; ?>
 
-      <form class="auth-form" action="/admin/login" method="POST">
+      <form class="auth-form" action="<?= url('/admin/login') ?>" method="POST">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
 
         <div class="auth-group">
@@ -74,12 +74,12 @@ $flash_error = $flash_error ?? Session::getFlash('error');
       </form>
 
       <div class="auth-footer">
-        <a href="/" class="back-to-site">
+        <a href="<?= url('/') ?>" class="back-to-site">
           <i class="fas fa-globe"></i> Back to TechFix Customer Website
         </a>
       </div>
     </div>
   </div>
-  <script src="/admin-assets/js/auth.js"></script>
+  <script src="<?= asset('/admin-assets/js/auth.js') ?>"></script>
 </body>
 </html>

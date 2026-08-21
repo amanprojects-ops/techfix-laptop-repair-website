@@ -18,6 +18,7 @@ if (!file_exists($autoloader)) {
     exit;
 }
 require $autoloader;
+require_once BASE_PATH . '/app/helpers.php';
 
 // Load .env
 $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
