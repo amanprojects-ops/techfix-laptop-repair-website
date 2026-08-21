@@ -12,9 +12,9 @@ if (!function_exists('base_url_prefix')) {
     function base_url_prefix(): string
     {
         $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-        $dir = dirname($scriptName);
+        $dir = str_replace('\\', '/', dirname($scriptName));
         $clean = preg_replace('#/public$#', '', $dir);
-        return ($clean === '/' || $clean === '.' || $clean === '') ? '' : rtrim($clean, '/');
+        return ($clean === '/' || $clean === '.' || $clean === '' || $clean === '\\') ? '' : rtrim($clean, '/');
     }
 }
 
