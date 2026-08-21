@@ -156,15 +156,20 @@ if ($currentStageIndex === false) {
     </div>
 
     <!-- 4. Hardware Photos Gallery -->
-    <?php if (!empty($repair['images'])): ?>
     <div style="background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:24px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
         <div style="width:34px;height:34px;background:var(--accent-light);color:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;">
           <i data-lucide="camera" style="width:18px;height:18px;"></i>
         </div>
         <h3 style="font-size:1.15rem;font-weight:800;color:var(--text);">Workshop Hardware Photos</h3>
+        <?php if (!empty($repair['images'])): ?>
+        <span style="font-size:0.75rem;background:var(--accent-light);color:var(--accent);font-weight:800;padding:2px 8px;border-radius:var(--radius-full);margin-left:auto;">
+          <?= count($repair['images']) ?> Photos
+        </span>
+        <?php endif; ?>
       </div>
 
+      <?php if (!empty($repair['images'])): ?>
       <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));gap:14px;">
         <?php foreach ($repair['images'] as $img): 
           $filename = basename($img['file_path']);
@@ -179,8 +184,13 @@ if ($currentStageIndex === false) {
         <?php endforeach; ?>
       </div>
       <span style="font-size:0.78rem;color:var(--text-muted);display:block;margin-top:12px;text-align:center;">Click any photo to view full high-resolution image</span>
+      <?php else: ?>
+      <div style="padding:18px;text-align:center;background:var(--bg);border-radius:var(--radius-sm);color:var(--text-muted);font-size:0.875rem;">
+        <i data-lucide="image" style="width:28px;height:28px;margin:0 auto 8px;opacity:0.4;display:block;"></i>
+        <span>No hardware photos attached by technician yet.</span>
+      </div>
+      <?php endif; ?>
     </div>
-    <?php endif; ?>
 
     <!-- 5. Invoicing & Payment Receipts -->
     <div style="background:#FFFFFF;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:24px;">

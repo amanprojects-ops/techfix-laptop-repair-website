@@ -4,23 +4,29 @@ namespace App\Services;
 
 class UploadService
 {
-    private string $uploadDir;
+    private string $storageDir;
+    private string $publicDir;
     private int    $maxSize;
     private array  $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
     private array  $allowedExts  = ['jpg', 'jpeg', 'png', 'webp'];
 
     public function __construct()
     {
-        $this->uploadDir = BASE_PATH . '/storage/uploads/repair-images/';
-        $this->maxSize   = (int)($_ENV['UPLOAD_MAX_SIZE'] ?? 5242880); // 5 MB
+        $this->storageDir = BASE_PATH . '/storage/uploads/repair-images/';
+        $this->publicDir  = BASE_PATH . '/public/uploads/repair-images/';
+        $this->maxSize    = (int)($_ENV['UPLOAD_MAX_SIZE'] ?? 5242880); // 5 MB
 
-        if (!is_dir($this->uploadDir)) {
-            mkdir($this->uploadDir, 0755, true);
+        if (!is_dir($this->storageDir)) {
+            mkdir($this->storageDir, 0755, true);
+        }
+        if (!is_dir($this->publicDir)) {
+            mkdir($this->publicDir, 0755, true);
         }
     }
 
     /**
      * Upload a repair image.
+     * Saves to public and storage directories.
      * Returns relative path on success, throws on failure.
      */
     public function uploadRepairImage(array $file): string
@@ -38,7 +44,7 @@ class UploadService
             throw new \RuntimeException('Invalid file type. Only JPG, PNG, and WebP are allowed.');
         }
 
-        // Verify actual MIME type from file content (not just header)
+        // Verify actual MIME type from file content
         $finfo    = new \finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->file($file['tmp_name']);
         if (!in_array($mimeType, $this->allowedMimes, true)) {
@@ -48,33 +54,25 @@ class UploadService
         // Generate safe UUID filename
         $uuid     = $this->generateUUID();
         $filename = $uuid . '.' . $ext;
-        $destPath = $this->uploadDir . $filename;
+        $destPublic  = $this->publicDir . $filename;
+        $destStorage = $this->storageDir . $filename;
 
-        if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+        if (!move_uploaded_file($file['tmp_name'], $destPublic)) {
             throw new \RuntimeException('Failed to save uploaded file.');
         }
+
+        // Keep storage copy in sync
+        @copy($destPublic, $destStorage);
 
         // Return relative path stored in DB
         return 'repair-images/' . $filename;
     }
 
-    public function deleteFile(string $relativePath): void
-    {
-        $fullPath = BASE_PATH . '/storage/uploads/' . $relativePath;
-        if (file_exists($fullPath)) {
-            unlink($fullPath);
-        }
-    }
-
     private function generateUUID(): string
     {
-        return sprintf(
-            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
+        $data = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 }

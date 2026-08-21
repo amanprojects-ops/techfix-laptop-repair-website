@@ -176,9 +176,14 @@ $balance       = max(0, $final - $paid);
 
       <?php if (!empty($images)): ?>
       <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:12px;margin-bottom:18px;">
-        <?php foreach ($images as $img): ?>
+        <?php foreach ($images as $img): 
+          $filename = basename($img['file_path']);
+          $imgUrl   = '/uploads/repair-images/' . urlencode($filename);
+        ?>
         <div style="border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border-color);position:relative;background:#000;">
-          <img src="/admin/uploads/<?= urlencode(basename($img['file_path'])) ?>" alt="Repair photo" style="width:100%;aspect-ratio:1;object-fit:cover;" />
+          <a href="<?= $imgUrl ?>" target="_blank" rel="noopener" style="display:block;">
+            <img src="<?= $imgUrl ?>" alt="Repair photo" style="width:100%;aspect-ratio:1;object-fit:cover;" />
+          </a>
           <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.75);font-size:0.7rem;font-weight:700;text-align:center;padding:4px;color:#fff;text-transform:uppercase;">
             <?= htmlspecialchars($img['type'], ENT_QUOTES) ?>
           </div>

@@ -50,17 +50,16 @@ class TrackingController extends Controller
 
     public function result(string $trackingId): void
     {
-        $repair = Session::get('tracked_repair');
-
-        // If no session data or missing sub-arrays, fetch complete data
-        if (!$repair || ($repair['tracking_id'] ?? '') !== strtoupper($trackingId) || !isset($repair['images']) || !isset($repair['payments'])) {
-            $repair = $this->trackingService->getByTrackingId($trackingId);
-        }
+        // Always fetch fresh live data from DB (status, photos, payments, timeline)
+        $repair = $this->trackingService->getByTrackingId($trackingId);
 
         if (!$repair) {
-            Session::flash('tracking_error', 'Repair job not found.');
+            Session::flash('tracking_error', 'Repair job not found. Please check your Repair ID.');
             $this->redirect('/track-repair');
         }
+
+        // Update session with latest state
+        Session::set('tracked_repair', $repair);
 
         $pageTitle = 'Live Tracking: ' . $repair['tracking_id'] . ' — TechFix';
         $csrfToken = Session::csrfToken();
