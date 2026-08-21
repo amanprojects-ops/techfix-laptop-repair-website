@@ -19,12 +19,13 @@ class Request
 
     public function method(): string
     {
+        $serverMethod = strtoupper((string)($this->server['REQUEST_METHOD'] ?? 'GET'));
         // Support _method override for PUT/DELETE from HTML forms
         $override = $this->post['_method'] ?? null;
-        if ($this->server['REQUEST_METHOD'] === 'POST' && in_array(strtoupper($override ?? ''), ['PUT', 'DELETE', 'PATCH'])) {
-            return strtoupper($override);
+        if ($serverMethod === 'POST' && in_array(strtoupper((string)($override ?? '')), ['PUT', 'DELETE', 'PATCH'])) {
+            return strtoupper((string)$override);
         }
-        return strtoupper($this->server['REQUEST_METHOD']);
+        return $serverMethod;
     }
 
     public function uri(): string
