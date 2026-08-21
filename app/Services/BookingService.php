@@ -42,13 +42,13 @@ class BookingService
             $deviceId = Device::create([
                 'customer_id'          => $customerId,
                 'device_type'          => $data['device_type']          ?? 'laptop',
-                'brand'                => $data['device_brand'],
-                'model'                => $data['device_model']         ?? null,
-                'serial_number'        => $data['serial_number']        ?? null,
-                'color'                => $data['device_color']         ?? null,
+                'brand'                => $data['device_brand']         ?? $data['brand'] ?? 'Unknown',
+                'model'                => $data['device_model']         ?? $data['model'] ?? null,
+                'serial_number'        => $data['serial_number']        ?? $data['device_serial'] ?? null,
+                'color'                => $data['device_color']         ?? $data['color'] ?? null,
                 'password_required'    => !empty($data['password_required']) ? 1 : 0,
-                'device_password_hint' => $data['device_password_hint'] ?? null,
-                'accessories'          => $data['accessories']          ?? null,
+                'device_password_hint' => $data['device_password_hint'] ?? $data['lock_pattern'] ?? null,
+                'accessories'          => $data['accessories']          ?? $data['accessories_included'] ?? null,
                 'physical_condition'   => $data['physical_condition']   ?? null,
             ]);
 
@@ -56,6 +56,7 @@ class BookingService
             $trackingId = $this->idGenerator->generateUnique();
 
             // 4. Create repair job
+            $estimatedAmt = !empty($data['estimated_amount']) ? (float)$data['estimated_amount'] : (!empty($data['estimated_cost']) ? (float)$data['estimated_cost'] : null);
             $repairId = RepairJob::create([
                 'tracking_id'             => $trackingId,
                 'customer_id'             => $customerId,
@@ -63,6 +64,7 @@ class BookingService
                 'service_id'              => !empty($data['service_id']) ? (int)$data['service_id'] : null,
                 'assigned_technician_id'  => !empty($data['technician_id']) ? (int)$data['technician_id'] : null,
                 'problem_description'     => $data['problem_description'],
+                'estimated_amount'        => $estimatedAmt,
                 'priority'                => $data['priority']   ?? 'normal',
                 'created_by'              => Session::userId(),
             ]);
@@ -74,6 +76,21 @@ class BookingService
                 'Repair request received. Device booked in.',
                 Session::userId()
             );
+
+            // 6. Record advance payment if provided
+            $advanceAmt = !empty($data['advance_amount']) ? (float)$data['advance_amount'] : 0;
+            if ($advanceAmt > 0) {
+                \App\Models\Payment::create([
+                    'repair_job_id'  => $repairId,
+                    'amount'         => $advanceAmt,
+                    'payment_method' => $data['advance_payment_method'] ?? 'cash',
+                    'transaction_id' => $data['advance_transaction_id'] ?? null,
+                    'payment_status' => 'paid',
+                    'note'           => 'Advance payment at intake',
+                    'paid_at'        => date('Y-m-d H:i:s'),
+                    'created_by'     => Session::userId(),
+                ]);
+            }
 
             Database::commit();
 

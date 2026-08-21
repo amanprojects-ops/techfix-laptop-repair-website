@@ -48,8 +48,8 @@ class RepairJob
     {
         Database::query(
             'INSERT INTO repair_jobs
-             (tracking_id, customer_id, device_id, service_id, assigned_technician_id, problem_description, priority, current_status, received_at, created_by)
-             VALUES (:tracking_id, :customer_id, :device_id, :service_id, :assigned_technician_id, :problem_description, :priority, "RECEIVED", NOW(), :created_by)',
+             (tracking_id, customer_id, device_id, service_id, assigned_technician_id, problem_description, estimated_amount, priority, current_status, received_at, created_by)
+             VALUES (:tracking_id, :customer_id, :device_id, :service_id, :assigned_technician_id, :problem_description, :estimated_amount, :priority, "RECEIVED", NOW(), :created_by)',
             [
                 'tracking_id'             => $data['tracking_id'],
                 'customer_id'             => $data['customer_id'],
@@ -57,6 +57,7 @@ class RepairJob
                 'service_id'              => $data['service_id']              ?? null,
                 'assigned_technician_id'  => $data['assigned_technician_id'] ?? null,
                 'problem_description'     => $data['problem_description'],
+                'estimated_amount'        => !empty($data['estimated_amount']) ? (float)$data['estimated_amount'] : null,
                 'priority'                => $data['priority']                ?? 'normal',
                 'created_by'              => $data['created_by']              ?? null,
             ]
