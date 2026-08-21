@@ -11,7 +11,7 @@ class TrackingService
 {
     /**
      * Look up a repair by tracking ID + customer phone.
-     * Returns full repair data + timeline + images.
+     * Returns full repair data + timeline + images + payments.
      */
     public function lookup(string $trackingId, string $phone): array|false
     {
@@ -22,7 +22,7 @@ class TrackingService
         }
 
         // Verify phone matches customer
-        if ($repair['customer_phone'] !== trim($phone)) {
+        if (trim($repair['customer_phone']) !== trim($phone)) {
             return false;
         }
 
@@ -35,7 +35,7 @@ class TrackingService
     }
 
     /**
-     * Public tracking by tracking ID only (less secure — for admin-shared links)
+     * Public tracking by tracking ID only (with full timeline, images & payments)
      */
     public function getByTrackingId(string $trackingId): array|false
     {
@@ -43,6 +43,10 @@ class TrackingService
         if (!$repair) return false;
 
         $repair['timeline'] = RepairStatusHistory::getByRepairJob($repair['id']);
+        $repair['images']   = RepairImage::getByRepairJob($repair['id']);
+        $repair['payments'] = Payment::getByRepairJob($repair['id']);
+        $repair['paid']     = Payment::totalPaid($repair['id']);
+
         return $repair;
     }
 }

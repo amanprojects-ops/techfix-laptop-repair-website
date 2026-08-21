@@ -52,16 +52,45 @@ class TrackingController extends Controller
     {
         $repair = Session::get('tracked_repair');
 
-        // If no session data, try public lookup (less secure)
-        if (!$repair || ($repair['tracking_id'] ?? '') !== strtoupper($trackingId)) {
+        // If no session data or missing sub-arrays, fetch complete data
+        if (!$repair || ($repair['tracking_id'] ?? '') !== strtoupper($trackingId) || !isset($repair['images']) || !isset($repair['payments'])) {
             $repair = $this->trackingService->getByTrackingId($trackingId);
         }
 
         if (!$repair) {
+            Session::flash('tracking_error', 'Repair job not found.');
             $this->redirect('/track-repair');
         }
 
+        $pageTitle = 'Live Tracking: ' . $repair['tracking_id'] . ' — TechFix';
         $csrfToken = Session::csrfToken();
-        $this->render('frontend/repair-result', compact('repair', 'csrfToken'), 'main');
+        $this->render('frontend/repair-result', compact('repair', 'csrfToken', 'pageTitle'), 'main');
+    }
+
+    /**
+     * Safely serve uploaded repair images to public tracking page
+     */
+    public function serveImage(string $filename): void
+    {
+        $filename = basename($filename); // prevent path traversal
+        $path     = BASE_PATH . '/storage/uploads/repair-images/' . $filename;
+
+        if (!file_exists($path)) {
+            $this->abort(404, 'Image not found.');
+        }
+
+        $ext  = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $mime = match ($ext) {
+            'jpg', 'jpeg' => 'image/jpeg',
+            'png'         => 'image/png',
+            'webp'        => 'image/webp',
+            default       => 'application/octet-stream',
+        };
+
+        header('Content-Type: ' . $mime);
+        header('Content-Length: ' . filesize($path));
+        header('Cache-Control: public, max-age=86400');
+        readfile($path);
+        exit;
     }
 }
