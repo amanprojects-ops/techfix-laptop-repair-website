@@ -10,8 +10,17 @@ $flash_error = $flash_error ?? Session::getFlash('error');
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Login — TechFix Laptop Repair Portal</title>
+  <title>Staff &amp; Admin Portal — TechFix Laptop Repair</title>
+
+  <!-- Preconnect & Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6.4 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="/admin-assets/css/styles.css" />
   <link rel="stylesheet" href="/admin-assets/css/auth.css" />
 </head>
@@ -25,8 +34,9 @@ $flash_error = $flash_error ?? Session::getFlash('error');
       </div>
 
       <?php if ($flash_error): ?>
-      <div style="background:#fee2e2;color:#991b1b;padding:10px 16px;border-radius:8px;font-size:0.875rem;margin-bottom:16px;font-weight:600;">
-        <i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($flash_error, ENT_QUOTES) ?>
+      <div style="background:rgba(239, 68, 68, 0.15);border:1px solid #EF4444;color:#FCA5A5;padding:12px 16px;border-radius:10px;font-size:0.875rem;margin-bottom:20px;font-weight:600;display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-exclamation-triangle" style="color:#EF4444;"></i>
+        <span><?= htmlspecialchars($flash_error, ENT_QUOTES) ?></span>
       </div>
       <?php endif; ?>
 
@@ -37,7 +47,7 @@ $flash_error = $flash_error ?? Session::getFlash('error');
           <label for="email"><i class="fas fa-envelope"></i> Engineer Email</label>
           <div class="input-icon-wrap">
             <i class="fas fa-at field-icon"></i>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email" />
+            <input type="email" id="email" name="email" placeholder="e.g. admin@techfix.in" required autocomplete="email" autofocus />
           </div>
         </div>
 
@@ -46,20 +56,20 @@ $flash_error = $flash_error ?? Session::getFlash('error');
           <div class="input-icon-wrap">
             <i class="fas fa-key field-icon"></i>
             <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
-            <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password">
+            <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
               <i class="fas fa-eye"></i>
             </button>
           </div>
         </div>
 
         <button type="submit" class="btn-auth-submit">
-          <span>Access Dashboard</span>
+          <span>Access Workshop Dashboard</span>
           <i class="fas fa-arrow-right"></i>
         </button>
 
         <div class="auth-hint">
-          <i class="fas fa-info-circle"></i>
-          <span>Default: <strong>admin@techfix.in</strong> / <strong>admin123</strong> — change after first login.</span>
+          <i class="fas fa-shield-alt"></i>
+          <span>Default: <strong>admin@techfix.in</strong> / <strong>admin123</strong></span>
         </div>
       </form>
 

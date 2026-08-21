@@ -4,8 +4,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= htmlspecialchars($pageTitle ?? 'TechFix Admin', ENT_QUOTES) ?> — TechFix Admin</title>
+  <title><?= htmlspecialchars($pageTitle ?? 'Dashboard', ENT_QUOTES) ?> — TechFix Workshop Admin</title>
+  
+  <!-- Preconnect & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6.4 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Admin Stylesheet -->
   <link rel="stylesheet" href="/admin-assets/css/styles.css" />
 </head>
 <body>
@@ -21,10 +30,10 @@
     </div>
 
     <nav class="main-nav">
-      <div class="nav-section-title">Core Operations</div>
+      <div class="nav-section-title">Workshop Operations</div>
       <ul>
         <li class="<?= (str_contains($_SERVER['REQUEST_URI'], '/admin/dashboard') || $_SERVER['REQUEST_URI'] === '/admin') ? 'active' : '' ?>">
-          <a href="/admin/dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard Overview</span></a>
+          <a href="/admin/dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
         </li>
         <li class="has-submenu <?= str_contains($_SERVER['REQUEST_URI'], '/admin/repairs') ? 'open' : '' ?>">
           <a href="#" class="menu-toggle"><i class="fas fa-laptop-medical"></i><span>Repair Jobs</span><i class="fas fa-chevron-right submenu-arrow"></i></a>
@@ -42,7 +51,7 @@
         </li>
       </ul>
 
-      <div class="nav-section-title">People</div>
+      <div class="nav-section-title">People &amp; Staff</div>
       <ul>
         <li class="<?= str_contains($_SERVER['REQUEST_URI'], '/admin/customers') ? 'active' : '' ?>">
           <a href="/admin/customers"><i class="fas fa-users"></i><span>Customers</span></a>
@@ -52,13 +61,13 @@
         </li>
       </ul>
 
-      <div class="nav-section-title">Analytics</div>
+      <div class="nav-section-title">Quick Links</div>
       <ul>
         <li>
-          <a href="/track-repair" target="_blank"><i class="fas fa-external-link-alt"></i><span>Live Customer Tracker</span></a>
+          <a href="/track-repair" target="_blank"><i class="fas fa-external-link-alt"></i><span>Customer Tracker</span></a>
         </li>
         <li>
-          <a href="/" target="_blank"><i class="fas fa-globe"></i><span>View Customer Site</span></a>
+          <a href="/" target="_blank"><i class="fas fa-globe"></i><span>Live Customer Site</span></a>
         </li>
       </ul>
     </nav>
@@ -78,7 +87,7 @@
     </div>
   </aside>
 
-  <!-- Main Content -->
+  <!-- Main Content Area -->
   <main class="main-content">
     <?= $content ?>
   </main>
