@@ -57,10 +57,29 @@ class Database
         return $stmt;
     }
 
+    /** Fetch single row (alias of fetchOne) */
+    public static function fetch(string $sql, array $params = []): array|false
+    {
+        return self::fetchOne($sql, $params);
+    }
+
     /** Fetch single row */
     public static function fetchOne(string $sql, array $params = []): array|false
     {
         return self::query($sql, $params)->fetch();
+    }
+
+    /** Fetch single scalar value */
+    public static function fetchValue(string $sql, array $params = []): mixed
+    {
+        $stmt = self::query($sql, $params);
+        return $stmt->fetchColumn();
+    }
+
+    /** Execute statement and return affected rows count */
+    public static function execute(string $sql, array $params = []): int
+    {
+        return self::query($sql, $params)->rowCount();
     }
 
     /** Fetch all rows */
