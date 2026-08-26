@@ -201,3 +201,41 @@ if (!function_exists('is_maintenance_mode')) {
         return (string)setting('maintenance_mode', '0') === '1';
     }
 }
+
+if (!function_exists('invoice_prefix')) {
+    function invoice_prefix(): string
+    {
+        $prefix = (string)setting('billing_invoice_prefix', 'INV-{year}-');
+        $prefix = str_replace('{year}', date('Y'), $prefix);
+        return str_replace('{month}', date('m'), $prefix);
+    }
+}
+
+if (!function_exists('billing_gst_number')) {
+    function billing_gst_number(): string
+    {
+        return (string)setting('billing_gst_number', '');
+    }
+}
+
+if (!function_exists('billing_upi_id')) {
+    function billing_upi_id(): string
+    {
+        return (string)setting('billing_upi_id', 'techfix@sbi');
+    }
+}
+
+if (!function_exists('billing_upi_name')) {
+    function billing_upi_name(): string
+    {
+        return (string)setting('billing_upi_payee_name', site_name());
+    }
+}
+
+if (!function_exists('get_active_invoice_template')) {
+    function get_active_invoice_template(): string
+    {
+        return (string)setting('billing_default_template', 'modern');
+    }
+}
+
