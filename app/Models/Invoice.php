@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Database;
+use App\Core\Session;
+use App\Services\InvoiceService;
 use PDO;
 
 class Invoice
@@ -353,7 +355,7 @@ class Invoice
         // Regenerate UPI QR code for remaining balance
         $upiId = (string)Setting::get('billing_upi_id', 'techfix@sbi');
         $payee = (string)Setting::get('billing_upi_payee_name', site_name());
-        $qrService = new \App\Services\InvoiceService();
+        $qrService = new InvoiceService();
         $qrData = $qrService->generateUpiQrUrl($upiId, $payee, $newBalance, $invoice['invoice_number']);
 
         return self::update($id, [

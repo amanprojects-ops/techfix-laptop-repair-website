@@ -9,9 +9,11 @@ class Session
     public static function start(): void
     {
         if (!self::$started && session_status() === PHP_SESSION_NONE) {
-            ini_set('session.cookie_httponly', '1');
-            ini_set('session.cookie_samesite', 'Lax');
-            session_start();
+            if (!headers_sent()) {
+                @ini_set('session.cookie_httponly', '1');
+                @ini_set('session.cookie_samesite', 'Lax');
+                @session_start();
+            }
             self::$started = true;
         }
     }
