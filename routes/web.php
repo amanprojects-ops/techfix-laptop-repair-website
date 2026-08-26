@@ -21,6 +21,7 @@ $router->post('/book-repair',   [BookingController::class,  'submit']);
 $router->get('/track-repair',   [TrackingController::class, 'form']);
 $router->post('/track-repair',  [TrackingController::class, 'lookup']);
 $router->get('/repair/{id}',    [TrackingController::class, 'result']);
+$router->get('/repair/{id}/invoice', [TrackingController::class, 'invoice']);
 $router->get('/uploads/repair-images/{filename}', [TrackingController::class, 'serveImage']);
 
 // Contact

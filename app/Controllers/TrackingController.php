@@ -67,6 +67,34 @@ class TrackingController extends Controller
     }
 
     /**
+     * Customer-Facing Tax Invoice & Receipt View
+     */
+    public function invoice(string $trackingId): void
+    {
+        $repair = $this->trackingService->getByTrackingId($trackingId);
+        if (!$repair) {
+            $this->abort(404, 'Repair record not found.');
+        }
+
+        $invoiceService = new \App\Services\InvoiceService();
+        $invoice = \App\Models\Invoice::findByRepairJobId((int)$repair['id']);
+
+        if (!$invoice) {
+            // Auto-generate invoice for this ticket
+            $invId = $invoiceService->createFromRepair((int)$repair['id']);
+            $invoice = \App\Models\Invoice::findById($invId);
+        }
+
+        $templateKey = $invoice['template_key'] ?? 'modern';
+        $renderedHtml = $invoiceService->renderInvoiceHtml($invoice, $templateKey);
+
+        $pageTitle = 'Invoice #' . $invoice['invoice_number'] . ' — ' . site_name();
+        $csrfToken = Session::csrfToken();
+
+        $this->render('frontend/invoice', compact('repair', 'invoice', 'renderedHtml', 'csrfToken', 'pageTitle'), 'main');
+    }
+
+    /**
      * Safely serve uploaded repair images to public tracking page
      */
     public function serveImage(string $filename): void

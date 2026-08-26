@@ -234,6 +234,13 @@ if ($currentStageIndex === false) {
         <?php endif; ?>
       </div>
 
+      <!-- View Digital Tax Invoice Button -->
+      <div style="margin-bottom:20px;text-align:center;">
+        <a href="<?= url('/repair/' . urlencode($repair['tracking_id']) . '/invoice') ?>" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;font-weight:800;text-decoration:none;padding:12px 24px;border-radius:var(--radius-md);box-shadow:var(--shadow);">
+          <i data-lucide="file-text" style="width:18px;height:18px;"></i> View &amp; Download Official Tax Invoice Receipt
+        </a>
+      </div>
+
       <!-- Payment Transactions Log -->
       <?php if (!empty($repair['payments'])): ?>
       <div style="border-top:1px solid var(--border);padding-top:16px;">
