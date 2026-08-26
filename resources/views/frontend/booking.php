@@ -28,8 +28,8 @@ $successId = $_GET['id'] ?? null;
       </div>
       <p style="color:#047857;font-size:0.875rem;margin-top:16px;">Please save this ID to track your live repair progress or call our workshop.</p>
       <div style="margin-top:24px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
-        <a href="/repair/<?= urlencode($successId) ?>" class="btn btn--primary"><i data-lucide="activity"></i> Track Live Status</a>
-        <a href="/" class="btn btn--secondary">Back to Home</a>
+        <a href="<?= url('/repair/' . urlencode($successId)) ?>" class="btn btn--primary"><i data-lucide="activity"></i> Track Live Status</a>
+        <a href="<?= url('/') ?>" class="btn btn--secondary">Back to Home</a>
       </div>
     </div>
     <?php endif; ?>
@@ -50,7 +50,7 @@ $successId = $_GET['id'] ?? null;
       </div>
       <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:28px;">Please fill in the details below. Our certified engineer will inspect and contact you.</p>
 
-      <form method="POST" action="/book-repair" style="display:flex;flex-direction:column;gap:18px;">
+      <form method="POST" action="<?= url('/book-repair') ?>" style="display:flex;flex-direction:column;gap:18px;">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken ?? '', ENT_QUOTES) ?>" />
 
         <!-- Customer details -->

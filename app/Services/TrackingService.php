@@ -21,8 +21,11 @@ class TrackingService
             return false;
         }
 
-        // Verify phone matches customer
-        if (trim($repair['customer_phone']) !== trim($phone)) {
+        // Verify phone matches customer (compare clean last 10 digits for Indian mobile numbers)
+        $cleanDbPhone    = substr((string)preg_replace('/\D/', '', $repair['customer_phone']), -10);
+        $cleanInputPhone = substr((string)preg_replace('/\D/', '', $phone), -10);
+
+        if ($cleanDbPhone !== '' && $cleanDbPhone !== $cleanInputPhone) {
             return false;
         }
 

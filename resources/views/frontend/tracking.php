@@ -27,7 +27,7 @@
       </div>
       <?php endif; ?>
 
-      <form method="POST" action="/track-repair">
+      <form method="POST" action="<?= url('/track-repair') ?>">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
         <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:14px;">
           <div class="form-group" style="margin-bottom:0;">

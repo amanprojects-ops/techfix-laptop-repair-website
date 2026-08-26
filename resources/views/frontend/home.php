@@ -156,7 +156,7 @@
           </div>
           <p class="diag-result__desc" id="diagDesc">Click any problem card to get an instant recommendation.</p>
         </div>
-        <a href="/book-repair" class="btn btn--primary" id="diagCTA" style="display:none;">Book This Repair →</a>
+        <a href="<?= url('/book-repair') ?>" class="btn btn--primary" id="diagCTA" style="display:none;">Book This Repair →</a>
       </div>
     </div>
   </div>
@@ -183,7 +183,7 @@
             <span class="meta-item"><i data-lucide="clock"></i> <?= (int)$svc['estimated_days'] ?> Day<?= $svc['estimated_days'] > 1 ? 's' : '' ?></span>
             <span class="meta-item warranty"><i data-lucide="shield"></i> <?= (int)$svc['warranty_days'] ?> Days</span>
           </div>
-          <a href="/book-repair" class="service-card__cta">Book Now →</a>
+          <a href="<?= url('/book-repair') ?>" class="service-card__cta">Book Now →</a>
         </div>
         <?php endforeach; ?>
       <?php else: ?>
@@ -196,7 +196,7 @@
             <span class="meta-item"><i data-lucide="clock"></i> 2–4 Hours</span>
             <span class="meta-item warranty"><i data-lucide="shield"></i> 90 Days</span>
           </div>
-          <a href="/book-repair" class="service-card__cta">Book Now →</a>
+          <a href="<?= url('/book-repair') ?>" class="service-card__cta">Book Now →</a>
         </div>
       <?php endif; ?>
     </div>
@@ -459,7 +459,7 @@
       <div class="faq-item">
         <button class="faq-question">Can I track my repair status online? <i data-lucide="chevron-down"></i></button>
         <div class="faq-answer">
-          <p>Yes! Use our <a href="/track-repair" style="color:var(--accent)">Repair Tracking page</a> and enter your Repair ID to see real-time status updates.</p>
+          <p>Yes! Use our <a href="<?= url('/track-repair') ?>" style="color:var(--accent)">Repair Tracking page</a> and enter your Repair ID to see real-time status updates.</p>
         </div>
       </div>
     </div>

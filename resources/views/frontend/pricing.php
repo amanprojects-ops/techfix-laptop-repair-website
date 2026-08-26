@@ -76,7 +76,7 @@
     </div>
 
     <div style="text-align:center;margin-top:40px;">
-      <a href="/book-repair" class="btn btn--primary btn--lg">
+      <a href="<?= url('/book-repair') ?>" class="btn btn--primary btn--lg">
         <i data-lucide="wrench"></i> Book Your Repair Online
       </a>
     </div>
