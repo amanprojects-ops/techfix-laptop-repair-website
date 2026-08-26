@@ -350,12 +350,19 @@ class Invoice
             ]);
         }
 
+        // Regenerate UPI QR code for remaining balance
+        $upiId = (string)Setting::get('billing_upi_id', 'techfix@sbi');
+        $payee = (string)Setting::get('billing_upi_payee_name', site_name());
+        $qrService = new \App\Services\InvoiceService();
+        $qrData = $qrService->generateUpiQrUrl($upiId, $payee, $newBalance, $invoice['invoice_number']);
+
         return self::update($id, [
             'paid_amount'       => $newPaid,
             'balance_due'       => $newBalance,
             'status'            => $newStatus,
             'payment_method'    => $method,
             'payment_reference' => $ref ?: $invoice['payment_reference'],
+            'payment_qr_data'   => $qrData,
         ]);
     }
 

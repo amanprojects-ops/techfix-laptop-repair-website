@@ -46,6 +46,7 @@ $router->get('/admin/invoices/{id}/edit',           [InvoiceController::class,  
 $router->post('/admin/invoices/{id}/update',        [InvoiceController::class,    'update']);
 $router->post('/admin/invoices/{id}/delete',        [InvoiceController::class,    'delete']);
 $router->get('/admin/invoices/{id}/print',          [InvoiceController::class,    'print']);
+$router->get('/admin/invoices/{id}/payment',        [InvoiceController::class,    'view']);
 $router->post('/admin/invoices/{id}/payment',       [InvoiceController::class,    'addPayment']);
 $router->post('/admin/invoices/{id}/send-email',    [InvoiceController::class,    'sendEmail']);
 $router->post('/admin/repairs/{id}/generate-invoice', [InvoiceController::class,  'generateFromRepair']);
