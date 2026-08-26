@@ -13,8 +13,9 @@ $accentColor = $template['accent_color'] ?? '#1E293B';
 $secondaryColor = $template['secondary_color'] ?? '#334155';
 $fontFamily = $template['font_family'] ?? 'Inter, sans-serif';
 $showWatermark = !empty($template['show_watermark']) && $invoice['status'] === 'paid';
-$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']);
+$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']) && ((string)($settings['billing_show_upi_qr'] ?? '1') === '1');
 $showSignature = !empty($template['show_signature']);
+$showBank = !empty($template['show_bank_details']) && ((string)($settings['billing_show_bank_details'] ?? '1') === '1');
 
 $taxRateHalf = ((float)($invoice['tax_rate'] ?? 18.0)) / 2.0;
 $taxAmountHalf = ((float)($invoice['tax_amount'] ?? 0.0)) / 2.0;
@@ -147,11 +148,19 @@ $taxAmountHalf = ((float)($invoice['tax_amount'] ?? 0.0)) / 2.0;
     <!-- Bank & UPI Information -->
     <div style="padding: 10px 14px; border-right: 1px solid #334155; font-size: 0.8rem; display: flex; flex-direction: column; justify-content: space-between;">
       <div>
+        <?php if ($showBank && !empty($settings['billing_bank_account'])): ?>
         <div style="font-weight: 900; text-transform: uppercase; margin-bottom: 4px;">Bank Account Details for Payment:</div>
         <div>Bank Name: <strong><?= htmlspecialchars($settings['billing_bank_name'] ?? 'State Bank of India', ENT_QUOTES) ?></strong></div>
         <div>A/C Number: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_bank_account'] ?? '389201948201', ENT_QUOTES) ?></strong></div>
         <div>IFSC Code: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_bank_ifsc'] ?? 'SBIN0001234', ENT_QUOTES) ?></strong></div>
-        <div>UPI ID: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_upi_id'] ?? 'techfix@sbi', ENT_QUOTES) ?></strong></div>
+        <?php if (!empty($settings['billing_bank_branch'])): ?>
+        <div>Branch: <?= htmlspecialchars($settings['billing_bank_branch'], ENT_QUOTES) ?></div>
+        <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if (((string)($settings['billing_show_upi_qr'] ?? '1') === '1') && !empty($settings['billing_upi_id'])): ?>
+        <div style="<?= ($showBank && !empty($settings['billing_bank_account'])) ? 'margin-top: 6px;' : '' ?>">UPI ID: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_upi_id'] ?? 'techfix@sbi', ENT_QUOTES) ?></strong></div>
+        <?php endif; ?>
       </div>
 
       <?php if ($showQr && (float)$invoice['balance_due'] > 0): ?>

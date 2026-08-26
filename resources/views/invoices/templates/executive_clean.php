@@ -13,8 +13,9 @@ $accentColor = $template['accent_color'] ?? '#475569';
 $secondaryColor = $template['secondary_color'] ?? '#1E293B';
 $fontFamily = $template['font_family'] ?? 'Inter, sans-serif';
 $showWatermark = !empty($template['show_watermark']) && $invoice['status'] === 'paid';
-$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']);
+$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']) && ((string)($settings['billing_show_upi_qr'] ?? '1') === '1');
 $showSignature = !empty($template['show_signature']);
+$showBank = !empty($template['show_bank_details']) && ((string)($settings['billing_show_bank_details'] ?? '1') === '1');
 ?>
 <div class="invoice-container invoice-executive" style="font-family: <?= htmlspecialchars($fontFamily, ENT_QUOTES) ?>; color: #1E293B; background: #FFFFFF; max-width: 860px; margin: 0 auto; padding: 45px; box-sizing: border-box; position: relative; border-radius: 8px; border: 1px solid #E2E8F0; box-shadow: 0 4px 18px rgba(0,0,0,0.04);">
 
@@ -125,6 +126,14 @@ $showSignature = !empty($template['show_signature']);
           <div style="font-weight: 700; color: #0F172A;">Scan to Pay via UPI</div>
           <div style="font-family: monospace; font-size: 0.74rem;"><?= htmlspecialchars($settings['billing_upi_id'] ?? 'techfix@sbi', ENT_QUOTES) ?></div>
         </div>
+      </div>
+      <?php endif; ?>
+
+      <?php if ($showBank && !empty($settings['billing_bank_account'])): ?>
+      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 14px; border-radius: 6px; font-size: 0.78rem; color: #475569; margin-top: 8px;">
+        <div style="font-weight: 800; color: #0F172A; text-transform: uppercase; margin-bottom: 2px;">Bank Transfer (NEFT / IMPS)</div>
+        <div>Bank: <strong><?= htmlspecialchars($settings['billing_bank_name'] ?? '', ENT_QUOTES) ?></strong></div>
+        <div>A/C: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_bank_account'], ENT_QUOTES) ?></strong> | IFSC: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_bank_ifsc'] ?? '', ENT_QUOTES) ?></strong></div>
       </div>
       <?php endif; ?>
     </div>

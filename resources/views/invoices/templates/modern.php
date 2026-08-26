@@ -13,9 +13,9 @@ $accentColor = $template['accent_color'] ?? '#2563EB';
 $secondaryColor = $template['secondary_color'] ?? '#0F172A';
 $fontFamily = $template['font_family'] ?? 'Inter, sans-serif';
 $showWatermark = !empty($template['show_watermark']) && $invoice['status'] === 'paid';
-$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']);
+$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']) && ((string)($settings['billing_show_upi_qr'] ?? '1') === '1');
 $showSignature = !empty($template['show_signature']);
-$showBank = !empty($template['show_bank_details']);
+$showBank = !empty($template['show_bank_details']) && ((string)($settings['billing_show_bank_details'] ?? '1') === '1');
 $showTax = !empty($template['show_tax_breakup']);
 ?>
 <div class="invoice-container invoice-modern" style="font-family: <?= htmlspecialchars($fontFamily, ENT_QUOTES) ?>; color: #1E293B; background: #FFFFFF; max-width: 860px; margin: 0 auto; padding: 40px; box-sizing: border-box; position: relative; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">

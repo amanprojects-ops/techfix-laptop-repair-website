@@ -1103,26 +1103,33 @@
             <i class="fas fa-university"></i>
             <div>
               <h3>Bank &amp; Instant UPI Payment Gateway</h3>
-              <p>Enables instant scan-and-pay UPI QR code generation on invoices</p>
+              <p>Control direct bank transfer account details and scan-and-pay UPI QR visibility on invoices</p>
             </div>
           </div>
           <div class="settings-card-body">
-            <div class="form-group">
-              <label class="form-label" for="billing_upi_id">Workshop UPI ID (VPA) <span class="required">*</span></label>
-              <div class="input-with-icon">
-                <i class="fas fa-qrcode"></i>
-                <input type="text" id="billing_upi_id" name="billing_upi_id" class="form-control" value="<?= htmlspecialchars($settings['billing_upi_id'] ?? 'techfix@sbi', ENT_QUOTES) ?>" placeholder="techfix@sbi" required />
+            
+            <!-- 1. Direct Bank Transfer Enable/Disable Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 14px 16px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); margin-bottom: 16px;">
+              <div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-money-check-alt" style="color: var(--primary-color);"></i>
+                  <span>Reveal Direct Bank Transfer Account Details on Invoices</span>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+                  Enable or disable revealing your Bank Name, A/C Number, IFSC Code, and Branch on all printed and PDF invoices (NEFT / IMPS / RTGS).
+                </div>
               </div>
-              <span class="form-hint">Used to dynamically generate scan &amp; pay QR codes for Google Pay, PhonePe, Paytm, and BHIM.</span>
+              <label class="switch-toggle" title="Toggle Direct Bank Transfer Details">
+                <input type="checkbox" id="billing_show_bank_details" name="billing_show_bank_details" value="1" <?= ($settings['billing_show_bank_details'] ?? '1') === '1' ? 'checked' : '' ?> onchange="toggleBankDetailsSection(this.checked)" />
+                <span class="switch-slider"></span>
+              </label>
             </div>
 
-            <div class="form-group">
-              <label class="form-label" for="billing_upi_payee_name">UPI Payee Display Name</label>
-              <input type="text" id="billing_upi_payee_name" name="billing_upi_payee_name" class="form-control" value="<?= htmlspecialchars($settings['billing_upi_payee_name'] ?? 'TechFix Laptop Repair Center', ENT_QUOTES) ?>" />
-            </div>
-
-            <div style="border-top: 1px solid var(--border-color); margin: 16px 0; padding-top: 14px;">
-              <div style="font-size: 0.8rem; font-weight: 800; color: var(--text-primary); text-transform: uppercase; margin-bottom: 12px;">Bank Account for Direct Transfers (NEFT / IMPS)</div>
+            <!-- Bank Details Inputs Wrapper -->
+            <div id="bank-details-wrapper" style="background: #ffffff; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm); margin-bottom: 20px; transition: opacity 0.2s, max-height 0.3s; <?= ($settings['billing_show_bank_details'] ?? '1') === '1' ? '' : 'opacity: 0.55;' ?>">
+              <div style="font-size: 0.78rem; font-weight: 800; color: var(--primary-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                <i class="fas fa-university"></i> Bank Account Information (NEFT / IMPS / RTGS)
+              </div>
               
               <div class="form-group">
                 <label class="form-label" for="billing_bank_name">Bank Name</label>
@@ -1140,11 +1147,46 @@
                 </div>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="billing_bank_branch">Branch Name</label>
-                <input type="text" id="billing_bank_branch" name="billing_bank_branch" class="form-control" value="<?= htmlspecialchars($settings['billing_bank_branch'] ?? '', ENT_QUOTES) ?>" placeholder="Saharsa Main Branch" />
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="billing_bank_branch">Branch Name / Address</label>
+                <input type="text" id="billing_bank_branch" name="billing_bank_branch" class="form-control" value="<?= htmlspecialchars($settings['billing_bank_branch'] ?? '', ENT_QUOTES) ?>" placeholder="Saharsa Main Branch, Bihar" />
               </div>
             </div>
+
+            <!-- 2. Instant UPI QR Code Enable/Disable Toggle -->
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 14px 16px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); margin-bottom: 16px;">
+              <div>
+                <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-qrcode" style="color: #059669;"></i>
+                  <span>Enable Instant Scan-and-Pay UPI QR Code on Invoices</span>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+                  Generates dynamic, real-time UPI QR codes with pre-filled balance due amount for GPay, PhonePe, Paytm, and BHIM.
+                </div>
+              </div>
+              <label class="switch-toggle" title="Toggle UPI QR Code">
+                <input type="checkbox" id="billing_show_upi_qr" name="billing_show_upi_qr" value="1" <?= ($settings['billing_show_upi_qr'] ?? '1') === '1' ? 'checked' : '' ?> onchange="toggleUpiDetailsSection(this.checked)" />
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <!-- UPI Details Inputs Wrapper -->
+            <div id="upi-details-wrapper" style="background: #ffffff; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm); transition: opacity 0.2s; <?= ($settings['billing_show_upi_qr'] ?? '1') === '1' ? '' : 'opacity: 0.55;' ?>">
+              <div class="form-group">
+                <label class="form-label" for="billing_upi_id">Workshop UPI ID (VPA) <span class="required">*</span></label>
+                <div class="input-with-icon">
+                  <i class="fas fa-qrcode"></i>
+                  <input type="text" id="billing_upi_id" name="billing_upi_id" class="form-control" value="<?= htmlspecialchars($settings['billing_upi_id'] ?? 'techfix@sbi', ENT_QUOTES) ?>" placeholder="techfix@sbi" />
+                </div>
+                <span class="form-hint">Used to dynamically generate scan &amp; pay QR codes.</span>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="billing_upi_payee_name">UPI Payee Display Name</label>
+                <input type="text" id="billing_upi_payee_name" name="billing_upi_payee_name" class="form-control" value="<?= htmlspecialchars($settings['billing_upi_payee_name'] ?? 'TechFix Laptop Repair Center', ENT_QUOTES) ?>" />
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1838,8 +1880,29 @@ async function previewTemplateLive(templateKey, accentColor, secondaryColor, fon
   }
 }
 
+function toggleBankDetailsSection(enabled) {
+  const box = document.getElementById('bank-details-wrapper');
+  if (box) {
+    box.style.opacity = enabled ? '1' : '0.55';
+    const inputs = box.querySelectorAll('input');
+    inputs.forEach(inp => {
+      inp.disabled = !enabled;
+    });
+  }
+}
+
+function toggleUpiDetailsSection(enabled) {
+  const box = document.getElementById('upi-details-wrapper');
+  if (box) {
+    box.style.opacity = enabled ? '1' : '0.55';
+    const inputs = box.querySelectorAll('input');
+    inputs.forEach(inp => {
+      inp.disabled = !enabled;
+    });
+  }
+}
+
 function closeTemplatePreviewModal() {
   document.getElementById('modal-template-preview').style.display = 'none';
 }
 </script>
-

@@ -13,8 +13,9 @@ $accentColor = $template['accent_color'] ?? '#06B6D4';
 $secondaryColor = $template['secondary_color'] ?? '#0B132B';
 $fontFamily = $template['font_family'] ?? 'Inter, sans-serif';
 $showWatermark = !empty($template['show_watermark']) && $invoice['status'] === 'paid';
-$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']);
+$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']) && ((string)($settings['billing_show_upi_qr'] ?? '1') === '1');
 $showSignature = !empty($template['show_signature']);
+$showBank = !empty($template['show_bank_details']) && ((string)($settings['billing_show_bank_details'] ?? '1') === '1');
 ?>
 <div class="invoice-container invoice-techfix-neon" style="font-family: <?= htmlspecialchars($fontFamily, ENT_QUOTES) ?>; color: #0F172A; background: #FFFFFF; max-width: 860px; margin: 0 auto; padding: 0; box-sizing: border-box; position: relative; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(11, 19, 43, 0.1);">
 
@@ -139,6 +140,16 @@ $showSignature = !empty($template['show_signature']);
             <div style="font-size: 0.75rem; color: #0891B2; margin-top: 2px;">Instant zero-fee payment via GPay / PhonePe</div>
             <div style="font-size: 0.82rem; font-weight: 700; font-family: monospace; color: #0B132B; margin-top: 3px;"><?= htmlspecialchars($settings['billing_upi_id'] ?? 'techfix@sbi', ENT_QUOTES) ?></div>
           </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($showBank && !empty($settings['billing_bank_account'])): ?>
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 12px 16px; border-radius: 8px; font-size: 0.8rem; color: #475569;">
+          <div style="font-weight: 800; color: #0F172A; text-transform: uppercase; margin-bottom: 3px;">
+            <i class="fas fa-university" style="color: <?= $accentColor ?>; margin-right: 4px;"></i> Direct Bank Transfer (NEFT / IMPS)
+          </div>
+          <div>Bank: <strong><?= htmlspecialchars($settings['billing_bank_name'] ?? '', ENT_QUOTES) ?></strong></div>
+          <div>A/C: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_bank_account'], ENT_QUOTES) ?></strong> | IFSC: <strong style="font-family: monospace;"><?= htmlspecialchars($settings['billing_bank_ifsc'] ?? '', ENT_QUOTES) ?></strong></div>
         </div>
         <?php endif; ?>
 

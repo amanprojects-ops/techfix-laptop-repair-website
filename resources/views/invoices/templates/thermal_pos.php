@@ -9,7 +9,7 @@
  * @var bool  $isPrintMode
  */
 
-$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']);
+$showQr = !empty($template['show_qr_code']) && !empty($invoice['payment_qr_data']) && ((string)($settings['billing_show_upi_qr'] ?? '1') === '1');
 ?>
 <div class="invoice-container invoice-thermal" style="font-family: 'Courier New', Courier, monospace; color: #000000; background: #FFFFFF; width: 320px; max-width: 100%; margin: 0 auto; padding: 16px 12px; box-sizing: border-box; font-size: 12px; line-height: 1.35; border: 1px dashed #000;">
 
