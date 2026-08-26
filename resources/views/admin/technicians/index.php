@@ -66,7 +66,7 @@
               </span>
             </td>
             <td style="text-align:right;">
-              <form method="POST" action="/admin/technicians/<?= $t['id'] ?>/toggle" style="display:inline;">
+              <form method="POST" action="<?= url('/admin/technicians/' . $t['id'] . '/toggle') ?>" style="display:inline;">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
                 <button type="submit" class="btn-secondary btn-sm" style="color:var(--text-muted);">
                   <?= $t['status'] === 'active' ? 'Deactivate' : 'Activate' ?>
@@ -86,7 +86,7 @@
     <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary-color);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
       <i class="fas fa-user-plus"></i> Add New Technician
     </div>
-    <form method="POST" action="/admin/technicians" style="display:flex;flex-direction:column;gap:14px;">
+    <form method="POST" action="<?= url('/admin/technicians') ?>" style="display:flex;flex-direction:column;gap:14px;">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
       <div class="form-field">
         <label>Full Name *</label>

@@ -15,18 +15,18 @@ $statusColors = [
     </div>
   </div>
   <div class="header-right">
-    <a href="/admin/repairs/create" class="btn-primary"><i class="fas fa-plus"></i> Intake New Device</a>
+    <a href="<?= url('/admin/repairs/create') ?>" class="btn-primary"><i class="fas fa-plus"></i> Intake New Device</a>
   </div>
 </header>
 
 <div style="padding:24px;">
   <!-- Status filter pills -->
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
-    <a href="/admin/repairs" style="font-size:0.8rem;font-weight:700;padding:7px 16px;border-radius:var(--radius-full);text-decoration:none;background:<?= !$status ? 'var(--primary-color)' : 'var(--bg-card)' ?>;color:<?= !$status ? '#FFFFFF' : 'var(--text-secondary)' ?>;border:1px solid <?= !$status ? 'var(--primary-color)' : 'var(--border-color)' ?>;box-shadow:var(--shadow-xs);">
+    <a href="<?= url('/admin/repairs') ?>" style="font-size:0.8rem;font-weight:700;padding:7px 16px;border-radius:var(--radius-full);text-decoration:none;background:<?= !$status ? 'var(--primary-color)' : 'var(--bg-card)' ?>;color:<?= !$status ? '#FFFFFF' : 'var(--text-secondary)' ?>;border:1px solid <?= !$status ? 'var(--primary-color)' : 'var(--border-color)' ?>;box-shadow:var(--shadow-xs);">
       All (<?= (int)$total ?>)
     </a>
     <?php foreach ($statuses as $key => $label): ?>
-    <a href="/admin/repairs?status=<?= urlencode($key) ?>" style="font-size:0.8rem;font-weight:700;padding:7px 16px;border-radius:var(--radius-full);text-decoration:none;background:<?= $status === $key ? ($statusColors[$key] ?? 'var(--primary-color)') : 'var(--bg-card)' ?>;color:<?= $status === $key ? '#FFFFFF' : 'var(--text-secondary)' ?>;border:1px solid <?= $status === $key ? ($statusColors[$key] ?? 'var(--primary-color)') : 'var(--border-color)' ?>;box-shadow:var(--shadow-xs);">
+    <a href="<?= url('/admin/repairs?status=' . urlencode($key)) ?>" style="font-size:0.8rem;font-weight:700;padding:7px 16px;border-radius:var(--radius-full);text-decoration:none;background:<?= $status === $key ? ($statusColors[$key] ?? 'var(--primary-color)') : 'var(--bg-card)' ?>;color:<?= $status === $key ? '#FFFFFF' : 'var(--text-secondary)' ?>;border:1px solid <?= $status === $key ? ($statusColors[$key] ?? 'var(--primary-color)') : 'var(--border-color)' ?>;box-shadow:var(--shadow-xs);">
       <?= htmlspecialchars($label, ENT_QUOTES) ?>
     </a>
     <?php endforeach; ?>
@@ -37,7 +37,7 @@ $statusColors = [
     <div style="padding:3.5rem 2rem;text-align:center;color:var(--text-muted);">
       <i class="fas fa-inbox" style="font-size:3rem;margin-bottom:16px;display:block;opacity:.35;"></i>
       <strong style="font-size:1.1rem;color:var(--text-primary);display:block;margin-bottom:6px;">No repair jobs found in this view.</strong>
-      <a href="/admin/repairs/create" class="btn-primary" style="margin-top:12px;"><i class="fas fa-plus"></i> Intake New Device</a>
+      <a href="<?= url('/admin/repairs/create') ?>" class="btn-primary" style="margin-top:12px;"><i class="fas fa-plus"></i> Intake New Device</a>
     </div>
     <?php else: ?>
     <div style="overflow-x:auto;">
@@ -85,7 +85,7 @@ $statusColors = [
               </span>
             </td>
             <td style="text-align:right;">
-              <a href="/admin/repairs/<?= $r['id'] ?>" class="btn-secondary btn-sm">
+              <a href="<?= url('/admin/repairs/' . $r['id']) ?>" class="btn-secondary btn-sm">
                 <i class="fas fa-folder-open"></i> Manage Job
               </a>
             </td>
@@ -99,7 +99,7 @@ $statusColors = [
     <?php if ($pages > 1): ?>
     <div style="display:flex;align-items:center;justify-content:center;gap:6px;padding:16px;border-top:1px solid var(--border-color);flex-wrap:wrap;background:#FFFFFF;">
       <?php for ($p = 1; $p <= $pages; $p++): ?>
-      <a href="/admin/repairs?page=<?= $p ?><?= $status ? '&status=' . urlencode($status) : '' ?>" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem;text-decoration:none;border:1px solid <?= $p === $page ? 'var(--primary-color)' : 'var(--border-color)' ?>;background:<?= $p === $page ? 'var(--primary-color)' : 'var(--white)' ?>;color:<?= $p === $page ? '#FFFFFF' : 'var(--text-secondary)' ?>;">
+      <a href="<?= url('/admin/repairs?page=' . $p . ($status ? '&status=' . urlencode($status) : '')) ?>" style="display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem;text-decoration:none;border:1px solid <?= $p === $page ? 'var(--primary-color)' : 'var(--border-color)' ?>;background:<?= $p === $page ? 'var(--primary-color)' : 'var(--white)' ?>;color:<?= $p === $page ? '#FFFFFF' : 'var(--text-secondary)' ?>;">
         <?= $p ?>
       </a>
       <?php endfor; ?>

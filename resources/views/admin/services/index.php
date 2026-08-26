@@ -51,7 +51,7 @@
               </span>
             </td>
             <td style="text-align:right;">
-              <form method="POST" action="/admin/services/<?= $svc['id'] ?>/delete" style="display:inline;">
+              <form method="POST" action="<?= url('/admin/services/' . $svc['id'] . '/delete') ?>" style="display:inline;">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
                 <button type="submit" onclick="return confirm('Toggle status for this service?')" class="btn-secondary btn-sm" style="color:var(--text-muted);">
                   <?= $svc['status']==='active' ? 'Deactivate' : 'Activate' ?>
@@ -70,7 +70,7 @@
     <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary-color);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
       <i class="fas fa-plus-circle"></i> Add New Service
     </div>
-    <form method="POST" action="/admin/services" style="display:flex;flex-direction:column;gap:14px;">
+    <form method="POST" action="<?= url('/admin/services') ?>" style="display:flex;flex-direction:column;gap:14px;">
       <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
       <div class="form-field">
         <label>Service Name *</label>

@@ -7,16 +7,16 @@
     </div>
   </div>
   <div class="header-right">
-    <a href="/admin/repairs/create" class="btn-primary"><i class="fas fa-user-plus"></i> New Intake</a>
+    <a href="<?= url('/admin/repairs/create') ?>" class="btn-primary"><i class="fas fa-user-plus"></i> New Intake</a>
   </div>
 </header>
 
 <div style="padding:24px;">
-  <form method="GET" action="/admin/customers" style="margin-bottom:20px;display:flex;gap:10px;max-width:600px;">
+  <form method="GET" action="<?= url('/admin/customers') ?>" style="margin-bottom:20px;display:flex;gap:10px;max-width:600px;">
     <input type="text" name="q" value="<?= htmlspecialchars($search ?? '', ENT_QUOTES) ?>" placeholder="Search by customer name, phone number, email..." class="form-control" />
     <button type="submit" class="btn-primary"><i class="fas fa-search"></i> Search</button>
     <?php if ($search): ?>
-    <a href="/admin/customers" class="btn-secondary">Clear</a>
+    <a href="<?= url('/admin/customers') ?>" class="btn-secondary">Clear</a>
     <?php endif; ?>
   </form>
 

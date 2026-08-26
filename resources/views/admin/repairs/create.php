@@ -12,7 +12,7 @@ $fn  = fn($k) => htmlspecialchars($old[$k] ?? '', ENT_QUOTES);
     </div>
   </div>
   <div class="header-right">
-    <a href="/admin/repairs" class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Queue</a>
+    <a href="<?= url('/admin/repairs') ?>" class="btn-secondary"><i class="fas fa-arrow-left"></i> Back to Queue</a>
   </div>
 </header>
 
@@ -48,7 +48,7 @@ $fn  = fn($k) => htmlspecialchars($old[$k] ?? '', ENT_QUOTES);
   </div>
   <?php endif; ?>
 
-  <form method="POST" action="/admin/repairs" id="intakeForm" style="display:flex;flex-direction:column;gap:24px;">
+  <form method="POST" action="<?= url('/admin/repairs') ?>" id="intakeForm" style="display:flex;flex-direction:column;gap:24px;">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
 
     <!-- ──────────────── 1. Customer Information ──────────────── -->
@@ -280,7 +280,7 @@ $fn  = fn($k) => htmlspecialchars($old[$k] ?? '', ENT_QUOTES);
 
     <!-- ──────────────── Form Actions ──────────────── -->
     <div style="display:flex;gap:14px;justify-content:flex-end;align-items:center;padding:12px 0 32px;">
-      <a href="/admin/repairs" class="btn-secondary" style="padding:11px 22px;">Cancel</a>
+      <a href="<?= url('/admin/repairs') ?>" class="btn-secondary" style="padding:11px 22px;">Cancel</a>
       <button type="submit" class="btn-primary" style="padding:12px 28px;font-size:0.95rem;box-shadow:0 6px 20px rgba(37,99,235,0.35);">
         <i class="fas fa-save"></i> Generate Job Card &amp; Intake Device
       </button>

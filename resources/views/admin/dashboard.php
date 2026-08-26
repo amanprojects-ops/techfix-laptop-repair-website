@@ -24,7 +24,7 @@ $statusColors = [
     </div>
   </div>
   <div class="header-right">
-    <a href="/admin/repairs/create" class="btn-primary"><i class="fas fa-plus"></i> Intake Device</a>
+    <a href="<?= url('/admin/repairs/create') ?>" class="btn-primary"><i class="fas fa-plus"></i> Intake Device</a>
   </div>
 </header>
 
@@ -100,7 +100,7 @@ $statusColors = [
 <!-- ──────────────── Quick Action Shortcuts ──────────────── -->
 <div style="padding:0 24px 20px;">
   <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:14px;">
-    <a href="/admin/repairs/create" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
+    <a href="<?= url('/admin/repairs/create') ?>" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
       <div style="width:36px;height:36px;background:rgba(37,99,235,0.1);color:var(--primary-color);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;">
         <i class="fas fa-plus"></i>
       </div>
@@ -110,7 +110,7 @@ $statusColors = [
       </div>
     </a>
 
-    <a href="/admin/repairs" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
+    <a href="<?= url('/admin/repairs') ?>" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
       <div style="width:36px;height:36px;background:rgba(6,182,212,0.1);color:#06B6D4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;">
         <i class="fas fa-list-ul"></i>
       </div>
@@ -120,7 +120,7 @@ $statusColors = [
       </div>
     </a>
 
-    <a href="/admin/customers" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
+    <a href="<?= url('/admin/customers') ?>" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
       <div style="width:36px;height:36px;background:rgba(16,185,129,0.1);color:#10B981;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;">
         <i class="fas fa-users"></i>
       </div>
@@ -130,7 +130,7 @@ $statusColors = [
       </div>
     </a>
 
-    <a href="/track-repair" target="_blank" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
+    <a href="<?= url('/track-repair') ?>" target="_blank" style="background:#FFFFFF;border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;text-decoration:none;box-shadow:var(--shadow-xs);transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary-color)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border-color)';this.style.transform='none'">
       <div style="width:36px;height:36px;background:rgba(139,92,246,0.1);color:#8B5CF6;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;">
         <i class="fas fa-external-link-alt"></i>
       </div>
@@ -154,7 +154,7 @@ $statusColors = [
         <span style="font-size:0.8rem;color:var(--text-muted);">Latest repair tickets in laboratory</span>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <a href="/admin/repairs" class="btn-secondary btn-sm">View Full Queue (<?= (int)($stats['active_repairs'] + $stats['waiting_approval'] + $stats['ready_pickup']) ?> Active) →</a>
+        <a href="<?= url('/admin/repairs') ?>" class="btn-secondary btn-sm">View Full Queue (<?= (int)($stats['active_repairs'] + $stats['waiting_approval'] + $stats['ready_pickup']) ?> Active) →</a>
       </div>
     </div>
 
@@ -166,7 +166,7 @@ $statusColors = [
       <strong style="font-size:1.05rem;color:var(--text-primary);display:block;margin-bottom:4px;">No repair jobs in queue yet.</strong>
       <span>Click "Intake Device" to register your first laptop ticket.</span>
       <div style="margin-top:16px;">
-        <a href="/admin/repairs/create" class="btn-primary"><i class="fas fa-plus"></i> Intake New Device</a>
+        <a href="<?= url('/admin/repairs/create') ?>" class="btn-primary"><i class="fas fa-plus"></i> Intake New Device</a>
       </div>
     </div>
     <?php else: ?>
@@ -211,7 +211,7 @@ $statusColors = [
               </span>
             </td>
             <td style="text-align:right;">
-              <a href="/admin/repairs/<?= $job['id'] ?>" class="btn-secondary btn-sm">
+              <a href="<?= url('/admin/repairs/' . $job['id']) ?>" class="btn-secondary btn-sm">
                 <i class="fas fa-folder-open"></i> Open Job
               </a>
             </td>

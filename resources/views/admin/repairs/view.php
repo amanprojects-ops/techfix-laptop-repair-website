@@ -68,7 +68,7 @@ $balance       = max(0, $final - $paid);
 
       <!-- Quick status update form -->
       <?php if (!empty($transitions)): ?>
-      <form method="POST" action="/admin/repairs/<?= $repair['id'] ?>/status" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <form method="POST" action="<?= url('/admin/repairs/' . $repair['id'] . '/status') ?>" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
         <select name="status" class="form-control" style="width:auto;font-weight:600;">
           <?php foreach ($transitions as $s): ?>
@@ -137,7 +137,7 @@ $balance       = max(0, $final - $paid);
       <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--primary-color);margin-bottom:18px;display:flex;align-items:center;gap:8px;">
         <i class="fas fa-clipboard-check"></i> Workshop Diagnostics &amp; Pricing
       </div>
-      <form method="POST" action="/admin/repairs/<?= $repair['id'] ?>/update">
+      <form method="POST" action="<?= url('/admin/repairs/' . $repair['id'] . '/update') ?>">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-bottom:16px;">
           <div class="form-field">
@@ -204,7 +204,7 @@ $balance       = max(0, $final - $paid);
       </div>
       <?php endif; ?>
 
-      <form method="POST" action="/admin/repairs/<?= $repair['id'] ?>/images" enctype="multipart/form-data" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+      <form method="POST" action="<?= url('/admin/repairs/' . $repair['id'] . '/images') ?>" enctype="multipart/form-data" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
         <div class="form-field" style="width:160px;">
           <label>Photo Category</label>
@@ -279,7 +279,7 @@ $balance       = max(0, $final - $paid);
       </div>
       <?php endif; ?>
 
-      <form method="POST" action="/admin/repairs/<?= $repair['id'] ?>/payment" style="display:flex;flex-direction:column;gap:10px;">
+      <form method="POST" action="<?= url('/admin/repairs/' . $repair['id'] . '/payment') ?>" style="display:flex;flex-direction:column;gap:10px;">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
         <div class="form-field">
           <input type="number" name="amount" placeholder="Amount Received (₹)" step="0.01" min="1" required class="form-control" />

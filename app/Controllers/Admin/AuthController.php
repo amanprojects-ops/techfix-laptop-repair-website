@@ -46,6 +46,15 @@ class AuthController extends Controller
         }
 
         Session::login($user);
+
+        $intended = Session::get('intended_url');
+        Session::remove('intended_url');
+
+        if ($intended && !str_contains($intended, '/admin/login') && !str_contains($intended, '/admin/logout')) {
+            header('Location: ' . $intended);
+            exit;
+        }
+
         $this->redirect('/admin/dashboard');
     }
 

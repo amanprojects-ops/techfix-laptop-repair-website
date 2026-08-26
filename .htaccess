@@ -14,16 +14,12 @@
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
     # Prevent loop if already rewritten to public
-    RewriteCond %{REQUEST_URI} ^/public/ [NC]
+    RewriteCond %{REQUEST_URI} (?:^|/)public/ [NC]
     RewriteRule ^ - [L]
 
-    # If static asset exists in public folder, rewrite directly
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
+    # Rewrite all requests to public/ directory
+    RewriteCond %{REQUEST_URI} !/public/ [NC]
     RewriteRule ^(.*)$ public/$1 [L]
-
-    # Route root requests to public/
-    RewriteRule ^$ public/ [L]
 </IfModule>
 
 # Block sensitive directories and files from direct web access
