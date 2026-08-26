@@ -198,4 +198,20 @@ class RepairJob
     {
         return self::STATUSES[$status] ?? $status;
     }
+
+    public static function getByCustomerId(int $customerId): array
+    {
+        return Database::fetchAll(
+            'SELECT r.*,
+                    d.brand AS device_brand, d.model AS device_model,
+                    s.name AS service_name,
+                    COALESCE((SELECT SUM(amount) FROM payments WHERE repair_job_id = r.id AND payment_status = "paid"), 0) AS total_paid
+             FROM repair_jobs r
+             LEFT JOIN devices  d ON d.id = r.device_id
+             LEFT JOIN services s ON s.id = r.service_id
+             WHERE r.customer_id = :cid
+             ORDER BY r.created_at DESC',
+            ['cid' => $customerId]
+        );
+    }
 }

@@ -98,6 +98,26 @@ class InvoiceController extends Controller
     }
 
     /**
+     * AJAX endpoint to fetch customer billing information and recent repair jobs
+     */
+    public function getCustomerData(string $id): void
+    {
+        $customerId = (int)$id;
+        $customer = Customer::findById($customerId);
+        if (!$customer) {
+            $this->json(['success' => false, 'message' => 'Customer not found.'], 404);
+        }
+
+        $repairs = RepairJob::getByCustomerId($customerId);
+
+        $this->json([
+            'success'  => true,
+            'customer' => $customer,
+            'repairs'  => $repairs,
+        ]);
+    }
+
+    /**
      * Store new invoice
      */
     public function store(): void

@@ -74,11 +74,19 @@
           
           <div>
             <label class="form-label" for="customer_id">Select Existing Customer <span style="color: #ef4444;">*</span></label>
-            <select name="customer_id" id="customer_id" class="form-control" onchange="toggleCustomerQuickAdd(this.value)">
-              <option value="0">— Select Customer (Or Add New Below) —</option>
+            <select name="customer_id" id="customer_id" class="form-control" onchange="onCustomerSelect(this)" style="font-weight: 600;">
+              <option value="0" data-name="" data-phone="" data-email="" data-address="" data-city="">➕ — Quick-Add New Customer —</option>
               <?php foreach ($customers as $c): ?>
-              <option value="<?= $c['id'] ?>" <?= (($customer && $customer['id'] == $c['id']) || ($flash_input['customer_id'] ?? '') == $c['id']) ? 'selected' : '' ?>>
-                <?= htmlspecialchars($c['name'], ENT_QUOTES) ?> (<?= htmlspecialchars($c['phone'], ENT_QUOTES) ?>)
+              <option value="<?= $c['id'] ?>"
+                data-name="<?= htmlspecialchars($c['name'], ENT_QUOTES) ?>"
+                data-phone="<?= htmlspecialchars($c['phone'], ENT_QUOTES) ?>"
+                data-email="<?= htmlspecialchars($c['email'] ?? '', ENT_QUOTES) ?>"
+                data-address="<?= htmlspecialchars($c['address'] ?? '', ENT_QUOTES) ?>"
+                data-city="<?= htmlspecialchars($c['city'] ?? '', ENT_QUOTES) ?>"
+                data-state="<?= htmlspecialchars($c['state'] ?? '', ENT_QUOTES) ?>"
+                data-pincode="<?= htmlspecialchars($c['pincode'] ?? '', ENT_QUOTES) ?>"
+                <?= (($customer && $customer['id'] == $c['id']) || ($flash_input['customer_id'] ?? '') == $c['id']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($c['name'], ENT_QUOTES) ?> — <?= htmlspecialchars($c['phone'], ENT_QUOTES) ?><?= !empty($c['city']) ? ' (' . htmlspecialchars($c['city'], ENT_QUOTES) . ')' : '' ?>
               </option>
               <?php endforeach; ?>
             </select>
@@ -86,30 +94,82 @@
 
           <div>
             <label class="form-label">Linked Repair Ticket (Optional)</label>
-            <?php if ($repair): ?>
-            <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 9px 14px; border-radius: var(--radius-sm); font-weight: 700; color: #1e40af; display: flex; justify-content: space-between; align-items: center;">
-              <span><i class="fas fa-laptop-medical"></i> <?= htmlspecialchars($repair['tracking_id'], ENT_QUOTES) ?></span>
-              <span style="font-size: 0.8rem; font-weight: 600; color: #3b82f6;"><?= htmlspecialchars($repair['device_brand'] . ' ' . ($repair['device_model'] ?? ''), ENT_QUOTES) ?></span>
+            <input type="hidden" name="repair_job_id" id="input_repair_job_id" value="<?= $repair ? $repair['id'] : '' ?>" />
+            <div id="linked-ticket-display">
+              <?php if ($repair): ?>
+              <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 9px 14px; border-radius: var(--radius-sm); font-weight: 700; color: #1e40af; display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fas fa-laptop-medical"></i> <?= htmlspecialchars($repair['tracking_id'], ENT_QUOTES) ?></span>
+                <span style="font-size: 0.8rem; font-weight: 600; color: #3b82f6;"><?= htmlspecialchars($repair['device_brand'] . ' ' . ($repair['device_model'] ?? ''), ENT_QUOTES) ?></span>
+              </div>
+              <?php else: ?>
+              <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 9px 14px; border-radius: var(--radius-sm); color: #64748b; font-size: 0.88rem; display: flex; align-items: center; justify-content: space-between;">
+                <span id="ticket-status-text">Direct Standalone Invoice (No Ticket)</span>
+                <span id="ticket-unlink-btn" style="display:none; color: #ef4444; font-size: 0.78rem; font-weight: 700; cursor: pointer;" onclick="unlinkRepairTicket()">✕ Unlink</span>
+              </div>
+              <?php endif; ?>
             </div>
-            <?php else: ?>
-            <input type="text" class="form-control" value="Direct Standalone Invoice" readonly style="background: #f8fafc; color: #64748b;" />
-            <?php endif; ?>
           </div>
 
         </div>
 
+        <!-- Selected Customer Auto-Fill Profile Box -->
+        <div id="selected-customer-box" style="display: none; margin-top: 16px; padding: 16px 18px; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: #16a34a; color: #ffffff; font-size: 0.72rem;">
+                  <i class="fas fa-check"></i>
+                </span>
+                <span id="cust-card-name" style="font-weight: 800; font-size: 1.05rem; color: #14532d;"></span>
+                <span id="cust-card-city-badge" style="font-size: 0.76rem; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 9999px; font-weight: 700; display: none;"></span>
+              </div>
+              <div style="margin-top: 8px; font-size: 0.85rem; color: #166534; display: flex; flex-wrap: wrap; gap: 18px;">
+                <span><i class="fas fa-phone" style="margin-right: 4px; color: #15803d;"></i><strong id="cust-card-phone"></strong></span>
+                <span id="cust-card-email-wrap" style="display: none;"><i class="fas fa-envelope" style="margin-right: 4px; color: #15803d;"></i><span id="cust-card-email"></span></span>
+                <span id="cust-card-addr-wrap" style="display: none;"><i class="fas fa-map-marker-alt" style="margin-right: 4px; color: #15803d;"></i><span id="cust-card-address"></span></span>
+              </div>
+            </div>
+            <button type="button" onclick="clearCustomerSelection()" style="background: none; border: none; color: #15803d; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: underline;">
+              Add New Customer Instead
+            </button>
+          </div>
+
+          <!-- Linked Repair Jobs for this customer -->
+          <div id="cust-repairs-section" style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #bbf7d0; display: none;">
+            <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; color: #166534; letter-spacing: 0.5px; margin-bottom: 8px;">
+              <i class="fas fa-laptop-medical"></i> Available Repair Tickets for this Customer:
+            </div>
+            <div id="cust-repairs-list" style="display: flex; flex-direction: column; gap: 6px;"></div>
+          </div>
+        </div>
+
         <!-- Quick Add New Customer (Shown if customer_id == 0) -->
-        <div id="new-customer-fields" style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border-color); display: <?= $customer ? 'none' : 'block' ?>;">
-          <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">Or Quick-Register New Customer:</div>
+        <div id="new-customer-fields" style="margin-top: 16px; padding: 16px 18px; background: #f8fafc; border: 1px dashed var(--border-color); border-radius: 8px; display: <?= $customer ? 'none' : 'block' ?>;">
+          <div style="font-size: 0.78rem; font-weight: 800; color: var(--primary-color); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+            <i class="fas fa-user-plus"></i> New Customer Details (Auto-Saves to Directory):
+          </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
             <div>
-              <input type="text" name="new_customer_name" placeholder="Full Customer Name" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_name'] ?? '', ENT_QUOTES) ?>" />
+              <label class="form-label" style="font-size: 0.78rem;">Full Customer Name *</label>
+              <input type="text" name="new_customer_name" id="new_customer_name" placeholder="Full Customer Name" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_name'] ?? '', ENT_QUOTES) ?>" />
             </div>
             <div>
-              <input type="text" name="new_customer_phone" placeholder="Phone (e.g. 9876543210)" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_phone'] ?? '', ENT_QUOTES) ?>" />
+              <label class="form-label" style="font-size: 0.78rem;">Phone Number *</label>
+              <input type="text" name="new_customer_phone" id="new_customer_phone" placeholder="Phone (e.g. 9876543210)" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_phone'] ?? '', ENT_QUOTES) ?>" />
             </div>
             <div>
-              <input type="email" name="new_customer_email" placeholder="Email Address (optional)" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_email'] ?? '', ENT_QUOTES) ?>" />
+              <label class="form-label" style="font-size: 0.78rem;">Email Address (Optional)</label>
+              <input type="email" name="new_customer_email" id="new_customer_email" placeholder="Email Address (optional)" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_email'] ?? '', ENT_QUOTES) ?>" />
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-top: 10px;">
+            <div>
+              <label class="form-label" style="font-size: 0.78rem;">Billing Address (Optional)</label>
+              <input type="text" name="new_customer_address" id="new_customer_address" placeholder="Street / Landmark / Colony" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_address'] ?? '', ENT_QUOTES) ?>" />
+            </div>
+            <div>
+              <label class="form-label" style="font-size: 0.78rem;">City (Optional)</label>
+              <input type="text" name="new_customer_city" id="new_customer_city" placeholder="City (e.g. Saharsa)" class="form-control" value="<?= htmlspecialchars($flash_input['new_customer_city'] ?? '', ENT_QUOTES) ?>" />
             </div>
           </div>
         </div>
@@ -331,11 +391,160 @@
 <script>
 let rowCounter = 1;
 
-function toggleCustomerQuickAdd(val) {
+function onCustomerSelect(selectEl) {
+  const val = selectEl.value;
   const newCustBox = document.getElementById('new-customer-fields');
-  if (newCustBox) {
-    newCustBox.style.display = (val === '0') ? 'block' : 'none';
+  const selectedBox = document.getElementById('selected-customer-box');
+  const repairsSection = document.getElementById('cust-repairs-section');
+  const repairsList = document.getElementById('cust-repairs-list');
+
+  if (val === '0' || !val) {
+    if (newCustBox) newCustBox.style.display = 'block';
+    if (selectedBox) selectedBox.style.display = 'none';
+    if (repairsSection) repairsSection.style.display = 'none';
+    return;
   }
+
+  // Selected existing customer
+  if (newCustBox) newCustBox.style.display = 'none';
+
+  const selectedOpt = selectEl.options[selectEl.selectedIndex];
+  if (!selectedOpt) return;
+
+  const name    = selectedOpt.dataset.name || '';
+  const phone   = selectedOpt.dataset.phone || '';
+  const email   = selectedOpt.dataset.email || '';
+  const address = selectedOpt.dataset.address || '';
+  const city    = selectedOpt.dataset.city || '';
+  const state   = selectedOpt.dataset.state || '';
+  const pincode = selectedOpt.dataset.pincode || '';
+
+  // Fill Customer Card
+  document.getElementById('cust-card-name').textContent = name;
+  document.getElementById('cust-card-phone').textContent = phone;
+
+  const cityBadge = document.getElementById('cust-card-city-badge');
+  if (city) {
+    cityBadge.textContent = city;
+    cityBadge.style.display = 'inline-block';
+  } else {
+    cityBadge.style.display = 'none';
+  }
+
+  const emailWrap = document.getElementById('cust-card-email-wrap');
+  if (email) {
+    document.getElementById('cust-card-email').textContent = email;
+    emailWrap.style.display = 'inline';
+  } else {
+    emailWrap.style.display = 'none';
+  }
+
+  const addrWrap = document.getElementById('cust-card-addr-wrap');
+  const fullAddr = [address, city, state, pincode].filter(Boolean).join(', ');
+  if (fullAddr) {
+    document.getElementById('cust-card-address').textContent = fullAddr;
+    addrWrap.style.display = 'inline';
+  } else {
+    addrWrap.style.display = 'none';
+  }
+
+  if (selectedBox) selectedBox.style.display = 'block';
+
+  // Fetch linked repair tickets asynchronously
+  fetch('<?= url('/admin/invoices/customer/') ?>' + encodeURIComponent(val))
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.repairs && data.repairs.length > 0) {
+        repairsList.innerHTML = '';
+        data.repairs.forEach(rep => {
+          const repDiv = document.createElement('div');
+          repDiv.style.cssText = 'background: #ffffff; border: 1px solid #bbf7d0; border-radius: 6px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;';
+          
+          const finalAmt = parseFloat(rep.final_amount || rep.estimated_amount || 0);
+          const totalPaid = parseFloat(rep.total_paid || 0);
+          
+          repDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem;">
+              <span style="font-family: monospace; font-weight: 800; color: #166534; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">${rep.tracking_id}</span>
+              <strong style="color: #1f2937;">${rep.device_brand || ''} ${rep.device_model || ''}</strong>
+              <span style="color: #6b7280; font-size: 0.78rem;">(${rep.service_name || 'Hardware Repair'})</span>
+              <span style="font-size: 0.76rem; background: #f3f4f6; color: #374151; padding: 1px 6px; border-radius: 4px;">${rep.current_status}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 0.84rem; font-weight: 700; color: #15803d; font-family: monospace;">₹${finalAmt.toFixed(2)}</span>
+              <button type="button" class="btn btn-sm btn-primary" style="padding: 4px 10px; font-size: 0.78rem; font-weight: 700;" onclick='importRepairTicket(${JSON.stringify(rep).replace(/'/g, "&apos;")})'>
+                <i class="fas fa-magic" style="margin-right: 4px;"></i>Auto-Fill into Invoice
+              </button>
+            </div>
+          `;
+          repairsList.appendChild(repDiv);
+        });
+        repairsSection.style.display = 'block';
+      } else {
+        repairsSection.style.display = 'none';
+      }
+    })
+    .catch(() => {
+      if (repairsSection) repairsSection.style.display = 'none';
+    });
+}
+
+function clearCustomerSelection() {
+  const sel = document.getElementById('customer_id');
+  if (sel) {
+    sel.value = '0';
+    onCustomerSelect(sel);
+  }
+}
+
+function unlinkRepairTicket() {
+  document.getElementById('input_repair_job_id').value = '';
+  document.getElementById('ticket-status-text').textContent = 'Direct Standalone Invoice (No Ticket)';
+  document.getElementById('ticket-unlink-btn').style.display = 'none';
+}
+
+function importRepairTicket(rep) {
+  // 1. Set hidden repair_job_id
+  document.getElementById('input_repair_job_id').value = rep.id;
+  
+  // 2. Update linked ticket display
+  const statusText = document.getElementById('ticket-status-text');
+  const unlinkBtn = document.getElementById('ticket-unlink-btn');
+  if (statusText) {
+    statusText.innerHTML = `<span style="color: #1e40af; font-weight: 700;"><i class="fas fa-laptop-medical"></i> ${rep.tracking_id}</span> — ${rep.device_brand || ''} ${rep.device_model || ''}`;
+  }
+  if (unlinkBtn) unlinkBtn.style.display = 'inline';
+
+  // 3. Populate first line item row
+  const firstRow = document.querySelector('.item-row');
+  if (firstRow) {
+    const nameInput = firstRow.querySelector('.item-name-input');
+    const descInput = firstRow.querySelector('input[name*="[description]"]');
+    const priceInput = firstRow.querySelector('.item-price-input');
+    const typeSelect = firstRow.querySelector('select[name*="[item_type]"]');
+
+    if (typeSelect) typeSelect.value = 'service';
+    if (nameInput) {
+      nameInput.value = (rep.service_name || 'Laptop Diagnostic & Repair') + ' — ' + (rep.device_brand || '') + ' ' + (rep.device_model || '');
+    }
+    if (descInput && rep.problem_description) {
+      descInput.value = rep.problem_description;
+    }
+    
+    const amt = parseFloat(rep.final_amount || rep.estimated_amount || 0);
+    if (priceInput && amt > 0) {
+      priceInput.value = amt.toFixed(2);
+    }
+  }
+
+  // 4. Populate amount paid if recorded
+  const totalPaid = parseFloat(rep.total_paid || 0);
+  if (totalPaid > 0) {
+    const paidInput = document.getElementById('paid_amount');
+    if (paidInput) paidInput.value = totalPaid.toFixed(2);
+  }
+
+  recalculateInvoiceTotals();
 }
 
 function addLineItemRow() {
@@ -437,5 +646,9 @@ function recalculateInvoiceTotals() {
 
 document.addEventListener('DOMContentLoaded', () => {
   recalculateInvoiceTotals();
+  const custSel = document.getElementById('customer_id');
+  if (custSel && custSel.value !== '0') {
+    onCustomerSelect(custSel);
+  }
 });
 </script>

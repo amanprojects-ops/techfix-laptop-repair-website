@@ -40,6 +40,7 @@ $router->post('/admin/settings/templates/preview',  [SettingsController::class, 
 $router->get('/admin/invoices',                     [InvoiceController::class,    'index']);
 $router->get('/admin/invoices/create',              [InvoiceController::class,    'create']);
 $router->post('/admin/invoices',                    [InvoiceController::class,    'store']);
+$router->get('/admin/invoices/customer/{id}',       [InvoiceController::class,    'getCustomerData']);
 $router->get('/admin/invoices/{id}',                [InvoiceController::class,    'view']);
 $router->get('/admin/invoices/{id}/edit',           [InvoiceController::class,    'edit']);
 $router->post('/admin/invoices/{id}/update',        [InvoiceController::class,    'update']);
