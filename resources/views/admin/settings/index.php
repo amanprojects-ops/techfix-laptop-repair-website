@@ -85,6 +85,10 @@
       <i class="fas fa-cogs"></i>
       <span>Workshop &amp; Preferences</span>
     </a>
+    <a href="<?= url('/admin/settings?tab=billing') ?>" class="settings-tab-btn <?= $activeTab === 'billing' ? 'active' : '' ?>">
+      <i class="fas fa-file-invoice-dollar"></i>
+      <span>Billing &amp; Templates</span>
+    </a>
   </div>
 
   <!-- Tab Contents -->
@@ -882,6 +886,455 @@
     </form>
     <?php endif; ?>
 
+    <!-- ========================================== -->
+    <!-- TAB 6: BILLING & DYNAMIC TEMPLATE DESIGNER -->
+    <!-- ========================================== -->
+    <?php if ($activeTab === 'billing'): ?>
+    
+    <!-- Top Action Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
+      <div>
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+          <i class="fas fa-file-invoice-dollar" style="color: var(--primary-color); margin-right: 8px;"></i>Billing Setup &amp; Dynamic Template Engine
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin: 4px 0 0 0;">
+          Configure GST tax rules, invoice numbering, instant UPI QR codes, and customize or design invoice templates dynamically.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" onclick="openCreateTemplateModal()" class="btn btn-primary" style="font-size: 0.88rem; padding: 9px 16px; font-weight: 700;">
+          <i class="fas fa-plus-circle" style="margin-right: 6px;"></i>Create Custom Template
+        </button>
+        <a href="<?= url('/admin/invoices') ?>" class="btn" style="background: #ffffff; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 9px 16px; font-weight: 600; text-decoration: none;">
+          <i class="fas fa-receipt" style="margin-right: 6px;"></i>View All Invoices
+        </a>
+      </div>
+    </div>
+
+    <!-- Section A: Template Designer Library Cards -->
+    <div class="settings-card" style="margin-bottom: 28px;">
+      <div class="settings-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fas fa-palette"></i>
+          <div>
+            <h3>Invoice Template Library &amp; Live Designer</h3>
+            <p>Select your default invoice template, customize styling/colors, or test live renderings.</p>
+          </div>
+        </div>
+        <span class="badge" style="background: rgba(37, 99, 235, 0.1); color: var(--primary-color); padding: 4px 10px; border-radius: 9999px; font-weight: 700; font-size: 0.78rem;">
+          <?= count($templates ?? []) ?> Available Templates
+        </span>
+      </div>
+      <div class="settings-card-body">
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+          <?php foreach ($templates as $tpl): 
+            $isDefault = ($settings['billing_default_template'] ?? 'modern') === $tpl['template_key'];
+          ?>
+          <div class="template-card <?= $isDefault ? 'is-active' : '' ?>" style="border: 2px solid <?= $isDefault ? 'var(--primary-color)' : 'var(--border-color)' ?>; border-radius: var(--radius-sm); overflow: hidden; background: #ffffff; display: flex; flex-direction: column; transition: all var(--transition-speed); position: relative;">
+            
+            <!-- Card Header / Visual Accent Bar -->
+            <div style="height: 8px; background: <?= htmlspecialchars($tpl['accent_color'], ENT_QUOTES) ?>;"></div>
+            
+            <div style="padding: 16px; flex: 1; display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div style="font-weight: 800; font-size: 1rem; color: var(--text-primary);"><?= htmlspecialchars($tpl['name'], ENT_QUOTES) ?></div>
+                <?php if ($isDefault): ?>
+                <span style="background: #ecfdf5; color: #059669; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 9999px; border: 1px solid #a7f3d0; text-transform: uppercase;">
+                  Active Default
+                </span>
+                <?php endif; ?>
+              </div>
+
+              <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin: 0 0 14px 0; flex: 1;">
+                <?= htmlspecialchars($tpl['description'] ?? 'Dynamic invoice template', ENT_QUOTES) ?>
+              </p>
+
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; font-size: 0.74rem;">
+                <span style="background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 4px; font-weight: 600;">
+                  <i class="fas fa-file"></i> <?= htmlspecialchars(strtoupper($tpl['paper_size']), ENT_QUOTES) ?>
+                </span>
+                <span style="background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 4px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: <?= htmlspecialchars($tpl['accent_color'], ENT_QUOTES) ?>; display: inline-block;"></span>
+                  <?= htmlspecialchars($tpl['accent_color'], ENT_QUOTES) ?>
+                </span>
+                <?php if (!empty($tpl['is_system'])): ?>
+                <span style="background: #eff6ff; color: #2563eb; padding: 2px 8px; border-radius: 4px; font-weight: 600;">
+                  Built-in System
+                </span>
+                <?php else: ?>
+                <span style="background: #fdf4ff; color: #c026d3; padding: 2px 8px; border-radius: 4px; font-weight: 600;">
+                  Custom Dynamic
+                </span>
+                <?php endif; ?>
+              </div>
+
+              <!-- Template Action Buttons -->
+              <div style="display: flex; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                <button type="button" onclick="previewTemplateLive('<?= htmlspecialchars($tpl['template_key'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tpl['accent_color'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tpl['secondary_color'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tpl['font_family'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tpl['paper_size'], ENT_QUOTES) ?>')" class="btn btn-sm" style="flex: 1; background: #f8fafc; border: 1px solid var(--border-color); color: var(--text-primary); font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 5px;">
+                  <i class="fas fa-eye"></i> Live Preview
+                </button>
+                <button type="button" onclick="openEditTemplateModal(<?= htmlspecialchars(json_encode($tpl), ENT_QUOTES) ?>)" class="btn btn-sm" style="background: rgba(37, 99, 235, 0.08); color: var(--primary-color); border: 1px solid rgba(37, 99, 235, 0.2); font-size: 0.8rem; font-weight: 700; padding: 6px 12px;">
+                  <i class="fas fa-sliders-h"></i> Customize
+                </button>
+                <?php if (empty($tpl['is_system'])): ?>
+                <form method="POST" action="<?= url('/admin/settings/templates/' . $tpl['id'] . '/delete') ?>" onsubmit="return confirm('Delete this custom template?');" style="display: inline;">
+                  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
+                  <button type="submit" class="btn btn-sm" style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; padding: 6px 10px;" title="Delete Custom Template">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </form>
+                <?php endif; ?>
+              </div>
+
+            </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section B: Global Billing Configuration Form -->
+    <form method="POST" action="<?= url('/admin/settings/billing') ?>" class="settings-form">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+
+        <!-- Card 1: Invoicing & Default Sequence -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <i class="fas fa-sort-numeric-up-alt"></i>
+            <div>
+              <h3>Invoice Numbering &amp; Defaults</h3>
+              <p>Setup automatic numbering sequence and invoice timeline</p>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="form-group">
+              <label class="form-label" for="billing_invoice_prefix">Invoice Prefix Format <span class="required">*</span></label>
+              <input type="text" id="billing_invoice_prefix" name="billing_invoice_prefix" class="form-control" value="<?= htmlspecialchars($settings['billing_invoice_prefix'] ?? 'INV-{year}-', ENT_QUOTES) ?>" required />
+              <span class="form-hint">Supports tags: <code>{year}</code> (e.g. 2026), <code>{month}</code> (e.g. 08). Result: <strong><?= invoice_prefix() ?>1001</strong></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="billing_next_number">Next Invoice Sequence Number <span class="required">*</span></label>
+              <input type="number" id="billing_next_number" name="billing_next_number" class="form-control" value="<?= htmlspecialchars($settings['billing_next_number'] ?? '1001', ENT_QUOTES) ?>" min="1" required />
+              <span class="form-hint">Auto-increments after each generated invoice.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="billing_default_template">Default Active Template <span class="required">*</span></label>
+              <select id="billing_default_template" name="billing_default_template" class="form-control">
+                <?php foreach ($templates as $tpl): ?>
+                <option value="<?= htmlspecialchars($tpl['template_key'], ENT_QUOTES) ?>" <?= ($settings['billing_default_template'] ?? 'modern') === $tpl['template_key'] ? 'selected' : '' ?>>
+                  <?= htmlspecialchars($tpl['name'], ENT_QUOTES) ?> (<?= strtoupper($tpl['paper_size']) ?>)
+                </option>
+                <?php endforeach; ?>
+              </select>
+              <span class="form-hint">Applied automatically when generating new invoices.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="billing_default_due_days">Default Payment Due Period (Days)</label>
+              <input type="number" id="billing_default_due_days" name="billing_default_due_days" class="form-control" value="<?= htmlspecialchars($settings['billing_default_due_days'] ?? '7', ENT_QUOTES) ?>" min="0" />
+              <span class="form-hint">Number of days from invoice issue date until due (e.g. 7 days).</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: GST & Tax Credentials -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <i class="fas fa-percentage"></i>
+            <div>
+              <h3>GST &amp; Tax Configuration</h3>
+              <p>Manage tax rates, GSTIN registration, and tax names</p>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="form-group">
+              <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 12px;">
+                <div>
+                  <div style="font-weight: 700; font-size: 0.92rem; color: var(--text-primary);">Enable Tax Calculation</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">Apply GST / Tax rate automatically on invoice items</div>
+                </div>
+                <label class="switch-toggle">
+                  <input type="checkbox" name="billing_enable_tax" value="1" <?= ($settings['billing_enable_tax'] ?? '1') === '1' ? 'checked' : '' ?> />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label class="form-label" for="billing_tax_name">Tax Name</label>
+                <input type="text" id="billing_tax_name" name="billing_tax_name" class="form-control" value="<?= htmlspecialchars($settings['billing_tax_name'] ?? 'GST', ENT_QUOTES) ?>" placeholder="GST" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="billing_tax_rate">Default Tax Rate (%)</label>
+                <input type="number" id="billing_tax_rate" name="billing_tax_rate" class="form-control" value="<?= htmlspecialchars($settings['billing_tax_rate'] ?? '18', ENT_QUOTES) ?>" step="0.01" min="0" placeholder="18.00" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="billing_gst_number">GSTIN Number</label>
+              <div class="input-with-icon">
+                <i class="fas fa-id-card"></i>
+                <input type="text" id="billing_gst_number" name="billing_gst_number" class="form-control" value="<?= htmlspecialchars($settings['billing_gst_number'] ?? '', ENT_QUOTES) ?>" placeholder="10AAACT0000A1Z5" style="text-transform: uppercase;" />
+              </div>
+              <span class="form-hint">Shown on official GST Tax Invoices.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="billing_pan_number">Business PAN Number</label>
+              <div class="input-with-icon">
+                <i class="fas fa-file-invoice"></i>
+                <input type="text" id="billing_pan_number" name="billing_pan_number" class="form-control" value="<?= htmlspecialchars($settings['billing_pan_number'] ?? '', ENT_QUOTES) ?>" placeholder="AAACT0000A" style="text-transform: uppercase;" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Bank Account & Instant UPI Gateway -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <i class="fas fa-university"></i>
+            <div>
+              <h3>Bank &amp; Instant UPI Payment Gateway</h3>
+              <p>Enables instant scan-and-pay UPI QR code generation on invoices</p>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="form-group">
+              <label class="form-label" for="billing_upi_id">Workshop UPI ID (VPA) <span class="required">*</span></label>
+              <div class="input-with-icon">
+                <i class="fas fa-qrcode"></i>
+                <input type="text" id="billing_upi_id" name="billing_upi_id" class="form-control" value="<?= htmlspecialchars($settings['billing_upi_id'] ?? 'techfix@sbi', ENT_QUOTES) ?>" placeholder="techfix@sbi" required />
+              </div>
+              <span class="form-hint">Used to dynamically generate scan &amp; pay QR codes for Google Pay, PhonePe, Paytm, and BHIM.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="billing_upi_payee_name">UPI Payee Display Name</label>
+              <input type="text" id="billing_upi_payee_name" name="billing_upi_payee_name" class="form-control" value="<?= htmlspecialchars($settings['billing_upi_payee_name'] ?? 'TechFix Laptop Repair Center', ENT_QUOTES) ?>" />
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); margin: 16px 0; padding-top: 14px;">
+              <div style="font-size: 0.8rem; font-weight: 800; color: var(--text-primary); text-transform: uppercase; margin-bottom: 12px;">Bank Account for Direct Transfers (NEFT / IMPS)</div>
+              
+              <div class="form-group">
+                <label class="form-label" for="billing_bank_name">Bank Name</label>
+                <input type="text" id="billing_bank_name" name="billing_bank_name" class="form-control" value="<?= htmlspecialchars($settings['billing_bank_name'] ?? '', ENT_QUOTES) ?>" placeholder="State Bank of India" />
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                  <label class="form-label" for="billing_bank_account">Account Number</label>
+                  <input type="text" id="billing_bank_account" name="billing_bank_account" class="form-control" value="<?= htmlspecialchars($settings['billing_bank_account'] ?? '', ENT_QUOTES) ?>" placeholder="389201948201" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="billing_bank_ifsc">IFSC Code</label>
+                  <input type="text" id="billing_bank_ifsc" name="billing_bank_ifsc" class="form-control" value="<?= htmlspecialchars($settings['billing_bank_ifsc'] ?? '', ENT_QUOTES) ?>" placeholder="SBIN0001234" style="text-transform: uppercase;" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="billing_bank_branch">Branch Name</label>
+                <input type="text" id="billing_bank_branch" name="billing_bank_branch" class="form-control" value="<?= htmlspecialchars($settings['billing_bank_branch'] ?? '', ENT_QUOTES) ?>" placeholder="Saharsa Main Branch" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Default Terms & Notes -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <i class="fas fa-file-contract"></i>
+            <div>
+              <h3>Default Terms &amp; Customer Notes</h3>
+              <p>Default policies and warranty declarations printed on invoices</p>
+            </div>
+          </div>
+          <div class="settings-card-body">
+            <div class="form-group">
+              <label class="form-label" for="billing_default_notes">Default Customer Note</label>
+              <textarea id="billing_default_notes" name="billing_default_notes" rows="3" class="form-control" placeholder="Thank you for choosing TechFix..."><?= htmlspecialchars($settings['billing_default_notes'] ?? '', ENT_QUOTES) ?></textarea>
+              <span class="form-hint">Displayed under the line items on printed invoices.</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="billing_default_terms">Default Terms &amp; Conditions / Warranty Policy</label>
+              <textarea id="billing_default_terms" name="billing_default_terms" rows="7" class="form-control" style="font-size: 0.85rem; line-height: 1.5;"><?= htmlspecialchars($settings['billing_default_terms'] ?? '', ENT_QUOTES) ?></textarea>
+              <span class="form-hint">Standard legal warranty declaration printed in invoice footer.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="settings-form-actions">
+        <button type="submit" class="btn btn-primary" style="padding: 12px 28px; font-weight: 700; font-size: 1rem;">
+          <i class="fas fa-save" style="margin-right: 8px;"></i>Save All Billing &amp; Invoice Settings
+        </button>
+      </div>
+    </form>
+
+    <!-- Modal 1: Live Interactive Template Preview Modal -->
+    <div id="modal-template-preview" class="settings-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.75); z-index: 9999; backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: #ffffff; border-radius: 12px; max-width: 960px; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+        
+        <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-eye" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0;">Live Dynamic Template Preview</h3>
+          </div>
+          <button type="button" onclick="closeTemplatePreviewModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div id="preview-iframe-container" style="flex: 1; overflow-y: auto; padding: 24px; background: #f1f5f9;">
+          <div id="preview-loading-spinner" style="text-align: center; padding: 60px 0;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+            <div style="margin-top: 12px; font-weight: 600; color: #64748b;">Generating live dynamic template preview...</div>
+          </div>
+          <div id="preview-content-box"></div>
+        </div>
+
+        <div style="padding: 14px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; background: #ffffff;">
+          <button type="button" onclick="closeTemplatePreviewModal()" class="btn btn-secondary">Close Preview</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: Dynamic Template Creator / Editor Modal -->
+    <div id="modal-template-editor" class="settings-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.75); z-index: 9999; backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: #ffffff; border-radius: 12px; max-width: 820px; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+        
+        <form method="POST" action="<?= url('/admin/settings/templates/save') ?>" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
+          <input type="hidden" id="tpl-edit-id" name="template_id" value="0" />
+
+          <div style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="fas fa-sliders-h" style="color: var(--primary-color); font-size: 1.2rem;"></i>
+              <h3 id="tpl-modal-title" style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin: 0;">Customize Invoice Template</h3>
+            </div>
+            <button type="button" onclick="closeTemplateEditorModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div style="flex: 1; overflow-y: auto; padding: 24px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="tpl-name">Template Name <span class="required">*</span></label>
+                <input type="text" id="tpl-name" name="name" class="form-control" required placeholder="e.g. Clean Modern Indigo" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tpl-key">Template Key / Slug</label>
+                <input type="text" id="tpl-key" name="template_key" class="form-control" placeholder="e.g. modern_indigo" style="font-family: monospace;" />
+                <span class="form-hint">Lowercase alphanumeric characters only.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="tpl-description">Short Description</label>
+              <input type="text" id="tpl-description" name="description" class="form-control" placeholder="Brief note about the design layout and use case" />
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="tpl-accent">Primary Accent Color</label>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <input type="color" id="tpl-accent-picker" style="width: 40px; height: 38px; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; padding: 2px;" onchange="document.getElementById('tpl-accent').value = this.value" />
+                  <input type="text" id="tpl-accent" name="accent_color" class="form-control" value="#2563EB" oninput="document.getElementById('tpl-accent-picker').value = this.value" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="tpl-secondary">Secondary Header Color</label>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <input type="color" id="tpl-secondary-picker" style="width: 40px; height: 38px; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; padding: 2px;" onchange="document.getElementById('tpl-secondary').value = this.value" />
+                  <input type="text" id="tpl-secondary" name="secondary_color" class="form-control" value="#0F172A" oninput="document.getElementById('tpl-secondary-picker').value = this.value" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="tpl-paper-size">Paper Size Target</label>
+                <select id="tpl-paper-size" name="paper_size" class="form-control">
+                  <option value="A4">A4 Standard Sheet (210mm × 297mm)</option>
+                  <option value="Letter">US Letter (8.5in × 11in)</option>
+                  <option value="80mm_pos">80mm Thermal POS Roll Receipt</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="tpl-font">Font Family</label>
+                <select id="tpl-font" name="font_family" class="form-control">
+                  <option value="Inter, sans-serif">Inter (Modern Clean Sans)</option>
+                  <option value="system-ui, -apple-system, sans-serif">System UI Default</option>
+                  <option value="'Courier New', Courier, monospace">Monospace / Typewriter (POS)</option>
+                  <option value="Georgia, serif">Georgia (Classic Serif)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="tpl-watermark-text">Watermark Stamp Text</label>
+                <input type="text" id="tpl-watermark-text" name="watermark_text" class="form-control" value="PAID" placeholder="PAID" />
+              </div>
+            </div>
+
+            <!-- Toggles Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; background: #f8fafc; padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 16px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="tpl-watermark" name="show_watermark" value="1" checked /> Show PAID Watermark
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="tpl-qr" name="show_qr_code" value="1" checked /> Show Instant UPI QR
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="tpl-sig" name="show_signature" value="1" checked /> Show Signature Box
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="tpl-tax" name="show_tax_breakup" value="1" checked /> Show GST Tax Breakdown
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="tpl-bank" name="show_bank_details" value="1" checked /> Show Bank Details
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer;">
+                <input type="checkbox" id="tpl-active" name="is_active" value="1" checked /> Template is Active
+              </label>
+            </div>
+
+            <!-- Custom CSS Editor -->
+            <div class="form-group">
+              <label class="form-label" for="tpl-custom-css">Custom CSS Overrides (Optional)</label>
+              <textarea id="tpl-custom-css" name="custom_css" rows="4" class="form-control code-editor" placeholder="/* Custom CSS rules for this invoice template */&#10;.invoice-custom .invoice-header { background: #1e1b4b; }"></textarea>
+              <span class="form-hint">Directly injected into invoice rendering for pixel-perfect brand customization.</span>
+            </div>
+
+          </div>
+
+          <div style="padding: 14px 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc;">
+            <button type="button" onclick="closeTemplateEditorModal()" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save" style="margin-right: 6px;"></i>Save Dynamic Template
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <?php endif; ?>
+
+
   </div>
 </div>
 
@@ -1288,4 +1741,105 @@ document.addEventListener('DOMContentLoaded', () => {
     updateDesc();
   }
 });
+
+// ==========================================
+// DYNAMIC TEMPLATE DESIGNER JAVASCRIPT
+// ==========================================
+
+function openCreateTemplateModal() {
+  document.getElementById('tpl-modal-title').textContent = 'Create New Dynamic Template';
+  document.getElementById('tpl-edit-id').value = '0';
+  document.getElementById('tpl-name').value = '';
+  document.getElementById('tpl-key').value = '';
+  document.getElementById('tpl-key').readOnly = false;
+  document.getElementById('tpl-description').value = '';
+  document.getElementById('tpl-accent').value = '#2563EB';
+  document.getElementById('tpl-accent-picker').value = '#2563EB';
+  document.getElementById('tpl-secondary').value = '#0F172A';
+  document.getElementById('tpl-secondary-picker').value = '#0F172A';
+  document.getElementById('tpl-paper-size').value = 'A4';
+  document.getElementById('tpl-font').value = 'Inter, sans-serif';
+  document.getElementById('tpl-watermark-text').value = 'PAID';
+  document.getElementById('tpl-watermark').checked = true;
+  document.getElementById('tpl-qr').checked = true;
+  document.getElementById('tpl-sig').checked = true;
+  document.getElementById('tpl-tax').checked = true;
+  document.getElementById('tpl-bank').checked = true;
+  document.getElementById('tpl-active').checked = true;
+  document.getElementById('tpl-custom-css').value = '';
+
+  const modal = document.getElementById('modal-template-editor');
+  modal.style.display = 'flex';
+}
+
+function openEditTemplateModal(tpl) {
+  document.getElementById('tpl-modal-title').textContent = `Customize Template: ${tpl.name}`;
+  document.getElementById('tpl-edit-id').value = tpl.id;
+  document.getElementById('tpl-name').value = tpl.name || '';
+  document.getElementById('tpl-key').value = tpl.template_key || '';
+  document.getElementById('tpl-key').readOnly = true;
+  document.getElementById('tpl-description').value = tpl.description || '';
+  document.getElementById('tpl-accent').value = tpl.accent_color || '#2563EB';
+  document.getElementById('tpl-accent-picker').value = tpl.accent_color || '#2563EB';
+  document.getElementById('tpl-secondary').value = tpl.secondary_color || '#0F172A';
+  document.getElementById('tpl-secondary-picker').value = tpl.secondary_color || '#0F172A';
+  document.getElementById('tpl-paper-size').value = tpl.paper_size || 'A4';
+  document.getElementById('tpl-font').value = tpl.font_family || 'Inter, sans-serif';
+  document.getElementById('tpl-watermark-text').value = tpl.watermark_text || 'PAID';
+  document.getElementById('tpl-watermark').checked = tpl.show_watermark == 1;
+  document.getElementById('tpl-qr').checked = tpl.show_qr_code == 1;
+  document.getElementById('tpl-sig').checked = tpl.show_signature == 1;
+  document.getElementById('tpl-tax').checked = tpl.show_tax_breakup == 1;
+  document.getElementById('tpl-bank').checked = tpl.show_bank_details == 1;
+  document.getElementById('tpl-active').checked = tpl.is_active == 1;
+  document.getElementById('tpl-custom-css').value = tpl.custom_css || '';
+
+  const modal = document.getElementById('modal-template-editor');
+  modal.style.display = 'flex';
+}
+
+function closeTemplateEditorModal() {
+  document.getElementById('modal-template-editor').style.display = 'none';
+}
+
+async function previewTemplateLive(templateKey, accentColor, secondaryColor, fontFamily, paperSize) {
+  const modal = document.getElementById('modal-template-preview');
+  const spinner = document.getElementById('preview-loading-spinner');
+  const contentBox = document.getElementById('preview-content-box');
+
+  modal.style.display = 'flex';
+  spinner.style.display = 'block';
+  contentBox.innerHTML = '';
+
+  try {
+    const formData = new FormData();
+    formData.append('csrf_token', '<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>');
+    formData.append('template_key', templateKey);
+    formData.append('accent_color', accentColor);
+    formData.append('secondary_color', secondaryColor);
+    formData.append('font_family', fontFamily);
+    formData.append('paper_size', paperSize);
+
+    const response = await fetch('<?= url('/admin/settings/templates/preview') ?>', {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData
+    });
+
+    const html = await response.text();
+    spinner.style.display = 'none';
+    contentBox.innerHTML = html;
+
+  } catch (err) {
+    spinner.style.display = 'none';
+    contentBox.innerHTML = `<div style="color: #ef4444; padding: 20px; font-weight: bold;">Error loading preview: ${err.message}</div>`;
+  }
+}
+
+function closeTemplatePreviewModal() {
+  document.getElementById('modal-template-preview').style.display = 'none';
+}
 </script>
+

@@ -9,8 +9,10 @@ use App\Core\Database;
 use App\Core\Session;
 use App\Middleware\AdminMiddleware;
 use App\Middleware\CsrfMiddleware;
+use App\Models\InvoiceTemplate;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\InvoiceService;
 use App\Services\MailService;
 use App\Services\UploadService;
 
@@ -28,7 +30,7 @@ class SettingsController extends Controller
     public function index(): void
     {
         $activeTab = $this->request->get('tab', 'general');
-        $validTabs = ['general', 'seo', 'branding', 'mail', 'workshop'];
+        $validTabs = ['general', 'seo', 'branding', 'mail', 'workshop', 'billing'];
         if (!in_array($activeTab, $validTabs, true)) {
             $activeTab = 'general';
         }
@@ -36,6 +38,7 @@ class SettingsController extends Controller
         $user = User::findById((int)Session::userId());
         $csrfToken = Session::csrfToken();
         $settings = Setting::all();
+        $templates = InvoiceTemplate::all();
 
         $flashSuccess = Session::getFlash('success');
         $flashError   = Session::getFlash('error');
@@ -44,6 +47,7 @@ class SettingsController extends Controller
             'pageTitle'    => 'System Settings Manager',
             'activeTab'    => $activeTab,
             'settings'     => $settings,
+            'templates'    => $templates,
             'user'         => $user ?: ['name' => Session::userName(), 'role' => Session::userRole()],
             'csrfToken'    => $csrfToken,
             'flashSuccess' => $flashSuccess,
@@ -305,6 +309,197 @@ class SettingsController extends Controller
 
         Session::flash('success', 'Workshop preferences updated successfully.');
         $this->redirect('/admin/settings?tab=workshop');
+    }
+
+    /**
+     * Update Billing, Taxes, Banking & Invoicing Settings
+     */
+    public function updateBilling(): void
+    {
+        CsrfMiddleware::verify();
+
+        $data = [
+            'billing_invoice_prefix'   => trim((string)$this->request->post('billing_invoice_prefix', 'INV-{year}-')),
+            'billing_next_number'      => (string)max(1, (int)$this->request->post('billing_next_number', 1001)),
+            'billing_default_template' => trim((string)$this->request->post('billing_default_template', 'modern')),
+            'billing_tax_name'         => trim((string)$this->request->post('billing_tax_name', 'GST')),
+            'billing_tax_rate'         => (string)max(0.0, (float)$this->request->post('billing_tax_rate', 18.0)),
+            'billing_enable_tax'       => $this->request->post('billing_enable_tax') === '1' ? '1' : '0',
+            'billing_gst_number'       => strtoupper(trim((string)$this->request->post('billing_gst_number', ''))),
+            'billing_pan_number'       => strtoupper(trim((string)$this->request->post('billing_pan_number', ''))),
+            'billing_bank_name'        => trim((string)$this->request->post('billing_bank_name', '')),
+            'billing_bank_account'     => trim((string)$this->request->post('billing_bank_account', '')),
+            'billing_bank_ifsc'        => strtoupper(trim((string)$this->request->post('billing_bank_ifsc', ''))),
+            'billing_bank_branch'      => trim((string)$this->request->post('billing_bank_branch', '')),
+            'billing_upi_id'           => trim((string)$this->request->post('billing_upi_id', '')),
+            'billing_upi_payee_name'   => trim((string)$this->request->post('billing_upi_payee_name', '')),
+            'billing_default_due_days' => (string)max(0, (int)$this->request->post('billing_default_due_days', 7)),
+            'billing_default_notes'    => trim((string)$this->request->post('billing_default_notes', '')),
+            'billing_default_terms'    => trim((string)$this->request->post('billing_default_terms', '')),
+        ];
+
+        Setting::setMany($data);
+        $this->logAudit('UPDATE_BILLING_SETTINGS', 'Updated billing setup, tax details, bank and UPI configurations.');
+
+        Session::flash('success', 'Billing and invoicing settings saved successfully.');
+        $this->redirect('/admin/settings?tab=billing');
+    }
+
+    /**
+     * Save/Customize an Invoice Template dynamically
+     */
+    public function saveTemplate(): void
+    {
+        CsrfMiddleware::verify();
+
+        $templateId = (int)$this->request->post('template_id', 0);
+        $templateKey = preg_replace('/[^a-z0-9_]/', '', strtolower(trim((string)$this->request->post('template_key', ''))));
+        $name = trim((string)$this->request->post('name', ''));
+
+        if ($name === '') {
+            Session::flash('error', 'Template name is required.');
+            $this->redirect('/admin/settings?tab=billing');
+        }
+
+        $data = [
+            'name'              => $name,
+            'description'       => trim((string)$this->request->post('description', '')),
+            'is_active'         => $this->request->post('is_active') === '1' ? 1 : 0,
+            'paper_size'        => $this->request->post('paper_size') ?: 'A4',
+            'accent_color'      => trim((string)$this->request->post('accent_color', '#2563EB')),
+            'secondary_color'   => trim((string)$this->request->post('secondary_color', '#0F172A')),
+            'font_family'       => trim((string)$this->request->post('font_family', 'Inter, sans-serif')),
+            'show_watermark'    => $this->request->post('show_watermark') === '1' ? 1 : 0,
+            'watermark_text'    => trim((string)$this->request->post('watermark_text', 'PAID')),
+            'show_qr_code'      => $this->request->post('show_qr_code') === '1' ? 1 : 0,
+            'show_signature'    => $this->request->post('show_signature') === '1' ? 1 : 0,
+            'show_tax_breakup'  => $this->request->post('show_tax_breakup') === '1' ? 1 : 0,
+            'show_bank_details' => $this->request->post('show_bank_details') === '1' ? 1 : 0,
+            'header_layout'     => trim((string)$this->request->post('header_layout', 'standard')),
+            'custom_css'        => trim((string)$this->request->post('custom_css', '')),
+            'terms_default'     => trim((string)$this->request->post('terms_default', '')),
+            'notes_default'     => trim((string)$this->request->post('notes_default', '')),
+        ];
+
+        if ($templateId > 0) {
+            InvoiceTemplate::update($templateId, $data);
+            $this->logAudit('UPDATE_INVOICE_TEMPLATE', "Updated invoice template #{$templateId}");
+            Session::flash('success', "Invoice template '{$name}' updated successfully.");
+        } else {
+            if ($templateKey === '') {
+                $templateKey = 'tpl_' . time();
+            }
+            $data['template_key'] = $templateKey;
+            InvoiceTemplate::create($data);
+            $this->logAudit('CREATE_INVOICE_TEMPLATE', "Created dynamic invoice template '{$templateKey}'");
+            Session::flash('success', "New dynamic invoice template '{$name}' created successfully.");
+        }
+
+        $this->redirect('/admin/settings?tab=billing');
+    }
+
+    /**
+     * Delete custom dynamic template
+     */
+    public function deleteTemplate(string $id): void
+    {
+        CsrfMiddleware::verify();
+
+        $tpl = InvoiceTemplate::findById((int)$id);
+        if (!$tpl || !empty($tpl['is_system'])) {
+            Session::flash('error', 'Cannot delete system default templates.');
+            $this->redirect('/admin/settings?tab=billing');
+        }
+
+        InvoiceTemplate::delete((int)$id);
+        $this->logAudit('DELETE_INVOICE_TEMPLATE', "Deleted custom template #{$id}");
+
+        Session::flash('success', 'Custom template deleted successfully.');
+        $this->redirect('/admin/settings?tab=billing');
+    }
+
+    /**
+     * Dynamic AJAX template preview endpoint
+     */
+    public function previewTemplateAjax(): void
+    {
+        $templateKey = trim((string)$this->request->post('template_key', 'modern'));
+        $accentColor = trim((string)$this->request->post('accent_color', '#2563EB'));
+        $secondaryColor = trim((string)$this->request->post('secondary_color', '#0F172A'));
+        $fontFamily = trim((string)$this->request->post('font_family', 'Inter, sans-serif'));
+        $paperSize = trim((string)$this->request->post('paper_size', 'A4'));
+
+        $sampleInvoice = [
+            'id'                   => 9999,
+            'invoice_number'       => 'INV-' . date('Y') . '-PREVIEW',
+            'repair_job_id'        => 1,
+            'customer_id'          => 1,
+            'customer_name'        => 'Rahul Sharma',
+            'customer_phone'       => '+91-9876543210',
+            'customer_email'       => 'rahul.sharma@example.com',
+            'customer_address'     => 'Koshi Chowk, Ward 12',
+            'customer_city'        => 'Saharsa',
+            'repair_tracking_id'   => 'AMN-LR-202601',
+            'device_brand'         => 'Dell',
+            'device_model'         => 'Inspiron 15 5000',
+            'device_serial'        => 'CN-0X9821-70166',
+            'template_key'         => $templateKey,
+            'invoice_date'         => date('Y-m-d'),
+            'due_date'             => date('Y-m-d', strtotime('+7 days')),
+            'status'               => 'paid',
+            'currency'             => 'INR',
+            'currency_symbol'      => '₹',
+            'subtotal'             => 3500.00,
+            'discount_type'        => 'fixed',
+            'discount_value'       => 200.00,
+            'discount_amount'      => 200.00,
+            'tax_name'             => 'GST',
+            'tax_rate'             => 18.00,
+            'tax_amount'           => 594.00,
+            'shipping_or_handling' => 0.00,
+            'total_amount'         => 3894.00,
+            'paid_amount'          => 3894.00,
+            'balance_due'          => 0.00,
+            'payment_method'       => 'upi',
+            'payment_reference'    => 'UPI/382910482910',
+            'notes'                => 'Sample dynamic template preview.',
+            'terms_conditions'     => Setting::get('billing_default_terms'),
+            'payment_qr_data'      => (new InvoiceService())->generateUpiQrUrl('techfix@sbi', 'TechFix Center', 3894.00, 'INV-PREVIEW'),
+        ];
+
+        $sampleItems = [
+            [
+                'item_name'   => 'FHD 15.6" IPS Display Replacement (OEM Grade)',
+                'description' => 'Original 1920x1080 30-pin matte panel with 90-day warranty',
+                'item_type'   => 'part',
+                'quantity'    => 1.0,
+                'unit_price'  => 2800.00,
+                'total_price' => 2800.00,
+            ],
+            [
+                'item_name'   => 'Precision Display Assembly Installation & Testing',
+                'description' => 'Hinge alignment, bezel sealing, and dead-pixel calibration',
+                'item_type'   => 'labor',
+                'quantity'    => 1.0,
+                'unit_price'  => 700.00,
+                'total_price' => 700.00,
+            ],
+        ];
+
+        $sampleInvoice['items'] = $sampleItems;
+
+        $template = InvoiceTemplate::findByKey($templateKey) ?: [];
+        $template['accent_color']    = $accentColor;
+        $template['secondary_color'] = $secondaryColor;
+        $template['font_family']     = $fontFamily;
+        $template['paper_size']      = $paperSize;
+
+        $service = new InvoiceService();
+        $html = $service->renderInvoiceHtml($sampleInvoice, $templateKey);
+
+        header('Content-Type: text/html; charset=UTF-8');
+        echo $html;
+        exit;
     }
 
     private function isAjax(): bool

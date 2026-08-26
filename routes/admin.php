@@ -29,6 +29,11 @@ $router->post('/admin/settings/reset-branding',     [SettingsController::class, 
 $router->post('/admin/settings/mail',               [SettingsController::class,   'updateMail']);
 $router->post('/admin/settings/mail/test',          [SettingsController::class,   'sendTestEmail']);
 $router->post('/admin/settings/workshop',           [SettingsController::class,   'updateWorkshop']);
+$router->post('/admin/settings/billing',            [SettingsController::class,   'updateBilling']);
+$router->post('/admin/settings/templates/save',     [SettingsController::class,   'saveTemplate']);
+$router->post('/admin/settings/templates/{id}/delete', [SettingsController::class, 'deleteTemplate']);
+$router->post('/admin/settings/templates/preview',  [SettingsController::class,   'previewTemplateAjax']);
+
 
 // Repairs
 $router->get('/admin/repairs',                      [RepairController::class,     'index']);
