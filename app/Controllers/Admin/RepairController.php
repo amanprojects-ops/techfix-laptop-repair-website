@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Session;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\CsrfMiddleware;
+use App\Models\Invoice;
 use App\Models\RepairJob;
 use App\Models\RepairStatusHistory;
 use App\Models\RepairImage;
@@ -98,6 +99,7 @@ class RepairController extends Controller
         $images      = RepairImage::getByRepairJob((int)$id);
         $payments    = Payment::getByRepairJob((int)$id);
         $totalPaid   = Payment::totalPaid((int)$id);
+        $invoice     = Invoice::findByRepairJobId((int)$id);
         $services    = Service::all(true);
         $technicians = User::allTechnicians();
         $statuses    = RepairJob::STATUSES;
@@ -109,7 +111,7 @@ class RepairController extends Controller
         $user          = ['name' => Session::userName(), 'role' => Session::userRole()];
 
         $this->render('admin/repairs/view', compact(
-            'repair', 'timeline', 'images', 'payments', 'totalPaid',
+            'repair', 'timeline', 'images', 'payments', 'totalPaid', 'invoice',
             'services', 'technicians', 'statuses', 'transitions',
             'csrfToken', 'flash_success', 'flash_error', 'user'
         ), 'admin');

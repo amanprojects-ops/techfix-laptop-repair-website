@@ -68,6 +68,18 @@ $currentUri = $_SERVER['REQUEST_URI'] ?? '/admin/dashboard';
         </li>
       </ul>
 
+      <div class="nav-section-title">Finance &amp; Invoices</div>
+      <ul>
+        <li class="has-submenu <?= str_contains($currentUri, '/admin/invoices') ? 'open active' : '' ?>">
+          <a href="#" class="menu-toggle"><i class="fas fa-file-invoice-dollar"></i><span>Billing &amp; Invoices</span><i class="fas fa-chevron-right submenu-arrow"></i></a>
+          <ul class="submenu">
+            <li><a href="<?= url('/admin/invoices') ?>"><i class="fas fa-receipt"></i><span>All Invoices</span></a></li>
+            <li><a href="<?= url('/admin/invoices/create') ?>"><i class="fas fa-plus-circle"></i><span>Create Invoice</span></a></li>
+            <li><a href="<?= url('/admin/settings?tab=billing') ?>"><i class="fas fa-palette"></i><span>Templates &amp; Setup</span></a></li>
+          </ul>
+        </li>
+      </ul>
+
       <div class="nav-section-title">System &amp; Settings</div>
       <ul>
         <li class="<?= str_contains($currentUri, '/admin/settings') ? 'active' : '' ?>">

@@ -4,6 +4,7 @@ use App\Core\Router;
 use App\Controllers\Admin\AuthController;
 use App\Controllers\Admin\DashboardController;
 use App\Controllers\Admin\RepairController;
+use App\Controllers\Admin\InvoiceController;
 use App\Controllers\Admin\CustomerController;
 use App\Controllers\Admin\TechnicianController;
 use App\Controllers\Admin\ServiceController;
@@ -34,6 +35,19 @@ $router->post('/admin/settings/templates/save',     [SettingsController::class, 
 $router->post('/admin/settings/templates/{id}/delete', [SettingsController::class, 'deleteTemplate']);
 $router->post('/admin/settings/templates/preview',  [SettingsController::class,   'previewTemplateAjax']);
 
+
+// Invoices & Billing
+$router->get('/admin/invoices',                     [InvoiceController::class,    'index']);
+$router->get('/admin/invoices/create',              [InvoiceController::class,    'create']);
+$router->post('/admin/invoices',                    [InvoiceController::class,    'store']);
+$router->get('/admin/invoices/{id}',                [InvoiceController::class,    'view']);
+$router->get('/admin/invoices/{id}/edit',           [InvoiceController::class,    'edit']);
+$router->post('/admin/invoices/{id}/update',        [InvoiceController::class,    'update']);
+$router->post('/admin/invoices/{id}/delete',        [InvoiceController::class,    'delete']);
+$router->get('/admin/invoices/{id}/print',          [InvoiceController::class,    'print']);
+$router->post('/admin/invoices/{id}/payment',       [InvoiceController::class,    'addPayment']);
+$router->post('/admin/invoices/{id}/send-email',    [InvoiceController::class,    'sendEmail']);
+$router->post('/admin/repairs/{id}/generate-invoice', [InvoiceController::class,  'generateFromRepair']);
 
 // Repairs
 $router->get('/admin/repairs',                      [RepairController::class,     'index']);

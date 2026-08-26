@@ -20,9 +20,21 @@ $balance       = max(0, $final - $paid);
       <span class="header-subtitle">Intake: <?= date('d M Y, h:i A', strtotime($repair['received_at'])) ?></span>
     </div>
   </div>
-  <div class="header-right">
-    <button onclick="window.print()" class="btn-secondary"><i class="fas fa-print"></i> Print Job Card</button>
-    <a href="/admin/repairs" class="btn-secondary"><i class="fas fa-arrow-left"></i> Queue</a>
+  <div class="header-right" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+    <?php if (!empty($invoice)): ?>
+      <a href="<?= url('/admin/invoices/' . $invoice['id']) ?>" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+        <i class="fas fa-file-invoice-dollar"></i> View Invoice #<?= htmlspecialchars($invoice['invoice_number'], ENT_QUOTES) ?>
+      </a>
+    <?php else: ?>
+      <form method="POST" action="<?= url('/admin/repairs/' . $repair['id'] . '/generate-invoice') ?>" style="display:inline;">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
+        <button type="submit" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;">
+          <i class="fas fa-file-invoice-dollar"></i> Generate Tax Invoice
+        </button>
+      </form>
+    <?php endif; ?>
+    <button onclick="window.print()" class="btn-secondary"><i class="fas fa-print"></i> Job Card</button>
+    <a href="<?= url('/admin/repairs') ?>" class="btn-secondary"><i class="fas fa-arrow-left"></i> Queue</a>
   </div>
 </header>
 
@@ -245,6 +257,27 @@ $balance       = max(0, $final - $paid);
         </div>
         <?php endif; ?>
       </div>
+
+      <?php if (!empty($invoice)): ?>
+      <div style="background:#EFF6FF;border:1px solid #BFDBFE;padding:10px 12px;border-radius:6px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:0.72rem;font-weight:800;color:#1E40AF;text-transform:uppercase;">Tax Invoice</div>
+          <div style="font-size:0.88rem;font-weight:900;color:#1D4ED8;font-family:monospace;">#<?= htmlspecialchars($invoice['invoice_number'], ENT_QUOTES) ?></div>
+        </div>
+        <a href="<?= url('/admin/invoices/' . $invoice['id']) ?>" class="btn-primary btn-sm" style="text-decoration:none;padding:4px 10px;font-size:0.78rem;">
+          <i class="fas fa-eye"></i> View
+        </a>
+      </div>
+      <?php else: ?>
+      <div style="margin-bottom:14px;">
+        <form method="POST" action="<?= url('/admin/repairs/' . $repair['id'] . '/generate-invoice') ?>">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
+          <button type="submit" class="btn-secondary btn-sm" style="width:100%;justify-content:center;font-weight:700;background:#F8FAFC;border:1px solid var(--border-color);color:var(--primary-color);">
+            <i class="fas fa-magic"></i> 1-Click Generate Tax Invoice
+          </button>
+        </form>
+      </div>
+      <?php endif; ?>
 
       <form method="POST" action="/admin/repairs/<?= $repair['id'] ?>/payment" style="display:flex;flex-direction:column;gap:10px;">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
