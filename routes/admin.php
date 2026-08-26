@@ -58,6 +58,7 @@ $router->get('/admin/repairs/{id}',                 [RepairController::class,   
 $router->post('/admin/repairs/{id}/update',         [RepairController::class,     'update']);
 $router->post('/admin/repairs/{id}/status',         [RepairController::class,     'updateStatus']);
 $router->post('/admin/repairs/{id}/images',         [RepairController::class,     'uploadImage']);
+$router->post('/admin/repairs/{id}/images/{imageId}/delete', [RepairController::class, 'deleteImage']);
 $router->post('/admin/repairs/{id}/payment',        [RepairController::class,     'addPayment']);
 
 // Customers

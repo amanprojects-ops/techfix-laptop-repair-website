@@ -99,10 +99,12 @@ class TrackingController extends Controller
      */
     public function serveImage(string $filename): void
     {
-        $filename = basename($filename); // prevent path traversal
-        $path     = BASE_PATH . '/storage/uploads/repair-images/' . $filename;
+        $filename    = basename($filename); // prevent path traversal
+        $publicPath  = BASE_PATH . '/public/uploads/repair-images/' . $filename;
+        $storagePath = BASE_PATH . '/storage/uploads/repair-images/' . $filename;
+        $path        = file_exists($publicPath) ? $publicPath : (file_exists($storagePath) ? $storagePath : null);
 
-        if (!file_exists($path)) {
+        if (!$path || !file_exists($path)) {
             $this->abort(404, 'Image not found.');
         }
 

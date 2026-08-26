@@ -173,10 +173,10 @@ if ($currentStageIndex === false) {
       <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));gap:14px;">
         <?php foreach ($repair['images'] as $img): 
           $filename = basename($img['file_path']);
-          $imgSrc   = '/uploads/repair-images/' . urlencode($filename);
+          $imgSrc   = asset('/uploads/repair-images/' . rawurlencode($filename));
         ?>
-        <a href="<?= $imgSrc ?>" target="_blank" rel="noopener" style="text-decoration:none;display:block;border-radius:var(--radius-sm);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow-xs);position:relative;background:#000;">
-          <img src="<?= $imgSrc ?>" alt="Hardware photo" style="width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" />
+        <a href="<?= $imgSrc ?>" target="_blank" rel="noopener" style="text-decoration:none;display:block;border-radius:var(--radius-sm);overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow-xs);position:relative;background:#0F172A;">
+          <img src="<?= $imgSrc ?>" alt="Hardware photo" style="width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform 0.2s;display:block;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
           <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(10,15,30,0.85);backdrop-filter:blur(4px);color:#FFFFFF;font-size:0.7rem;font-weight:800;text-align:center;padding:5px 8px;text-transform:uppercase;letter-spacing:0.5px;">
             <?= htmlspecialchars($img['type'], ENT_QUOTES) ?>
           </div>

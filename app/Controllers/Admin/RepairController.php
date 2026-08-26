@@ -218,15 +218,38 @@ class RepairController extends Controller
         $this->redirect('/admin/repairs/' . $id);
     }
 
+    /**
+     * Delete an uploaded repair image
+     */
+    public function deleteImage(string $id, string $imageId): void
+    {
+        AuthMiddleware::handle();
+        CsrfMiddleware::verify();
+
+        $img = RepairImage::delete((int)$imageId);
+        if ($img) {
+            $filename = basename($img['file_path']);
+            @unlink(BASE_PATH . '/public/uploads/repair-images/' . $filename);
+            @unlink(BASE_PATH . '/storage/uploads/repair-images/' . $filename);
+            Session::flash('success', 'Hardware photo removed successfully.');
+        } else {
+            Session::flash('error', 'Image not found.');
+        }
+
+        $this->redirect('/admin/repairs/' . $id);
+    }
+
     /** Serve private repair images (protected by auth) */
     public function serveImage(string $filename): void
     {
         AuthMiddleware::handle();
 
-        $filename = basename($filename); // prevent path traversal
-        $path     = BASE_PATH . '/storage/uploads/repair-images/' . $filename;
+        $filename    = basename($filename); // prevent path traversal
+        $publicPath  = BASE_PATH . '/public/uploads/repair-images/' . $filename;
+        $storagePath = BASE_PATH . '/storage/uploads/repair-images/' . $filename;
+        $path        = file_exists($publicPath) ? $publicPath : (file_exists($storagePath) ? $storagePath : null);
 
-        if (!file_exists($path)) {
+        if (!$path || !file_exists($path)) {
             $this->abort(404, 'Image not found.');
         }
 

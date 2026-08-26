@@ -187,18 +187,24 @@ $balance       = max(0, $final - $paid);
       </div>
 
       <?php if (!empty($images)): ?>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));gap:12px;margin-bottom:18px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:12px;margin-bottom:18px;">
         <?php foreach ($images as $img): 
           $filename = basename($img['file_path']);
-          $imgUrl   = '/uploads/repair-images/' . urlencode($filename);
+          $imgUrl   = asset('/uploads/repair-images/' . rawurlencode($filename));
         ?>
-        <div style="border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border-color);position:relative;background:#000;">
+        <div style="border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border-color);position:relative;background:#0F172A;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
           <a href="<?= $imgUrl ?>" target="_blank" rel="noopener" style="display:block;">
-            <img src="<?= $imgUrl ?>" alt="Repair photo" style="width:100%;aspect-ratio:1;object-fit:cover;" />
+            <img src="<?= $imgUrl ?>" alt="Repair photo" style="width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
           </a>
-          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.75);font-size:0.7rem;font-weight:700;text-align:center;padding:4px;color:#fff;text-transform:uppercase;">
+          <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(15,23,42,0.85);backdrop-filter:blur(3px);font-size:0.68rem;font-weight:800;text-align:center;padding:4px;color:#fff;text-transform:uppercase;letter-spacing:0.5px;">
             <?= htmlspecialchars($img['type'], ENT_QUOTES) ?>
           </div>
+          <form method="POST" action="<?= url('/admin/repairs/' . $repair['id'] . '/images/' . $img['id'] . '/delete') ?>" onsubmit="return confirm('Delete this repair hardware photo?');" style="position:absolute;top:5px;right:5px;margin:0;">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>" />
+            <button type="submit" style="background:rgba(239,68,68,0.9);color:#FFFFFF;border:none;border-radius:4px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem;box-shadow:0 2px 4px rgba(0,0,0,0.2);" title="Delete Photo">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </form>
         </div>
         <?php endforeach; ?>
       </div>
